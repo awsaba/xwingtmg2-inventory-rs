@@ -14,11 +14,13 @@ in your favorite spreadsheet program.
    or box, so I need a way to more accurately count by type and restrictions to
    help me organize.
 1. I like the idea of being able to keep a copy of my inventory list local and
-  flexible.
+   flexible.
+1. Hopefully this is useful, as either an exercise in working `xwing-data2` or
+   as inspiration for something better.
 
 Why rust?
 
-1. I'm not a javascript/coffeescript/typescript programmer and need an excuse
+1. I'm not a JavaScript/coffee/typescript programmer and need an excuse
    to use an `rust` at all since it is not my day job currently.
 2. I tried to use the [pyxwb2](https://pypi.org/project/pyxwb2/) and immediately
    ran into having to do multiple checks for optional items such as `restrictions`.
@@ -38,17 +40,52 @@ expansion naming for collections.
 1. You will need a working rust toolchain.
 1. Clone the `xwing-data2` repository. (TODO: add as submodule?)
 1. Log in to <yasb.app>, access your collection at <https://yasb.app/collection>,
-   and save the json to `collection.json`.
-1. Run the tool with `cargo run`. This will product 2 csv files, one for pilots
+   and save the `json` to `collection.json`.
+1. Run the tool with `cargo run`. This will product 2 `json` files, one for pilots
    and one for upgrades.
+1. Use something like `jq` to turn it into CSV [(from StackOverflow)](https://stackoverflow.com/questions/32960857/how-to-convert-arbitrary-simple-json-to-csv-using-jq):
+
+```shell
+cat pilots.json | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv'
+```
 
 ## TODOs and other thoughts
 
 Contributions welcome!
 
-- Using something like [typify](https://github.com/oxidecomputer/typify) to
-  generate a full schema for xws. I had hand wrote the types for importing just meet
-  my need: tell me how many card organizer pages I need for an upgrade
+- Optionally output direct to CSV.
+- Add support ships and dials. Like, I have lost track of my T-65s and
+  valid dials I have for them.
+- Tests: Add at least 1 of everything to a collection in YASB and use that as
+  input.
+- GitHub actions for linting, building, and testing.
+- Generate a lookup from the YASB names to the `xws` id using the yasb card listing.
+- Make expansions support separate from yasb. Working with yasb requires looking up
+  from the YASB expansion and card names to something like XWS name in any case,
+  so this would help to support collection lists from other builders.
+- Use something like [typify](https://github.com/oxidecomputer/typify) to
+  generate a full schema for `xws`. I hand wrote the types for importing needed
+  for my need: tell me how many card organizer pages I need for an upgrade
   type/faction/restriction.
-- Automate the addition of new Expansions somehow? Expansions don't seem to
-  coming in fast, so adding one every couple months isn't likely to be a hassle.
+
+## Initial `expansions.json`
+
+This is what I did because I couldn't get the toolchain for `raithos/xwing`
+installed correctly.
+
+1. Prerequisite: `node` can be run.
+1. Cloned `raithos/xwing`.
+1. Added it to VS Code.
+1. Installed "CoffeeScript Preview" extension.
+1. Previewed `coffeescript/content/manifest.coffee`, save the produced JavaScript file.
+1. Add the following to generated file:
+
+   ```javascript
+     util = require('util')
+     console.log(JSON.stringify(exportObj.manifestByExpansion, null, 2))
+   ```
+
+1. Pipe to a file: `node .\manifest.coffee.js > tmp.json`
+1. There was something very incompatible with the encoding on Windows. The only
+   thing that worked was copying and pasting the entire contents of the file
+   into a new file :shrug:.

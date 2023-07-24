@@ -2,45 +2,76 @@
 // is necessary for some basic collection management.
 
 use serde::Deserialize;
-use serde_json;
 use std::fs;
 use std::io::Error;
 use std::path::Path;
 
+/// CardType the major card categories that appear at top-level of
+/// `xwing-data2/data/manifest.json`. This isn't really given a name in the spec,
+/// but is
+#[derive(Debug)]
+pub enum CardType {
+    Pilot,
+    Upgrade,
+}
+
 #[derive(Deserialize, Debug)]
 pub struct Pilot {
-    name: String,
-    xws: String,
-    initiative: u32,
+    pub name: String,
+    pub xws: String,
+    pub initiative: u32,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Ship {
-    name: String,
-    xws: String,
-    faction: String,
-    pilots: Vec<Pilot>,
+    pub name: String,
+    pub xws: String,
+    pub faction: String,
+    pub pilots: Vec<Pilot>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Side {
+    pub r#type: String,
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Upgrade {
-    name: String,
-    xws: String,
-    restritions: Option<serde_json::Value>,
+    pub name: String,
+    pub xws: String,
+    pub sides: Vec<Side>,
+
+    pub restrictions: Option<serde_json::Value>,
 }
 
 // TODO: The goal is have them all in one list, and let a spreadsheet
 #[derive(Deserialize, Debug)]
 pub struct Data {
-    pilots: Vec<Ship>,
+    pub ships: Vec<Ship>,
     // editor of some sort do the grouping/ordering
-    upgrades: Vec<Upgrade>,
+    pub upgrades: Vec<Upgrade>,
+}
+
+impl Data {
+    pub(crate) fn get_pilot(&self, xws: &str) -> Option<(&Ship, &Pilot)> {
+        for s in &self.ships {
+            for p in &s.pilots {
+                if p.xws == xws {
+                    return Some((s, p));
+                }
+            }
+        }
+        None
+    }
+
+    pub(crate) fn get_upgrade(&self, xws: &str) -> Option<&Upgrade> {
+        self.upgrades.iter().find(|&u| u.xws == xws)
+    }
 }
 
 #[derive(Deserialize, Debug)]
 struct ShipFaction {
-    faction: String,
-    ships: Vec<String>,
+    pub ships: Vec<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -63,7 +94,7 @@ pub fn load_from_manifest(path: &Path) -> Result<Data, Error> {
     let manifest: Manifest = serde_json::from_str(&buffer)?;
 
     let mut data = Data {
-        pilots: vec![],
+        ships: vec![],
         upgrades: vec![],
     };
 
@@ -74,6 +105,17 @@ pub fn load_from_manifest(path: &Path) -> Result<Data, Error> {
         // not to create a struct here yet
         let mut upgrades: Vec<Upgrade> = serde_json::from_str(&buffer)?;
         data.upgrades.append(&mut upgrades);
+    }
+
+    for faction in &manifest.pilots {
+        for pilot_path in &faction.ships {
+            let path = path.join(pilot_path);
+            let buffer = fs::read_to_string(path)?;
+            // TODO: the individual fils are pretty straightforward, so choosing
+            // not to create a struct here yet
+            let ship: Ship = serde_json::from_str(&buffer)?;
+            data.ships.push(ship);
+        }
     }
 
     Ok(data)
