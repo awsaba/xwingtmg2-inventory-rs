@@ -39,7 +39,7 @@ expansion naming for collections.
 
 1. You will need a working rust toolchain.
 1. Clone the `xwing-data2` repository. (TODO: add as submodule?)
-1. Log in to <yasb.app>, access your collection at <https://yasb.app/collection>,
+1. Log in to <https://yasb.app>, access your collection at <https://yasb.app/collection>,
    and save the `json` to `collection.json`.
 1. Run the tool with `cargo run`. This will product 2 `json` files, one for pilots
    and one for upgrades.
@@ -54,11 +54,13 @@ cat pilots.json | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $
 Contributions welcome!
 
 - Optionally output direct to CSV.
+- Remove `unwrap` and other `rust` no-nos.
 - Add support ships and dials. Like, I have lost track of my T-65s and
   valid dials I have for them.
 - Tests: Add at least 1 of everything to a collection in YASB and use that as
   input.
 - GitHub actions for linting, building, and testing.
+- Embed necessary data and build a binary.
 - Generate a lookup from the YASB names to the `xws` id using the yasb card listing.
 - Make expansions support separate from yasb. Working with yasb requires looking up
   from the YASB expansion and card names to something like XWS name in any case,

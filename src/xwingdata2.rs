@@ -35,13 +35,36 @@ pub struct Side {
     pub r#type: String,
 }
 
+pub enum Restriction {
+    Factions,
+    Sizes,
+    Ships,
+    Arcs,
+    Keywords,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct Restrictions {
+    #[serde(default)]
+    pub factions: Vec<String>,
+    #[serde(default)]
+    pub sizes: Vec<String>,
+    #[serde(default)]
+    pub ships: Vec<String>,
+    #[serde(default)]
+    pub arcs: Vec<String>,
+    #[serde(default)]
+    pub keywords: Vec<String>,
+}
+
 #[derive(Deserialize, Debug)]
 pub struct Upgrade {
     pub name: String,
     pub xws: String,
     pub sides: Vec<Side>,
 
-    pub restrictions: Option<serde_json::Value>,
+    #[serde(default)]
+    pub restrictions: Vec<Restrictions>,
 }
 
 // TODO: The goal is have them all in one list, and let a spreadsheet
@@ -99,6 +122,7 @@ pub fn load_from_manifest(path: &Path) -> Result<Data, Error> {
     };
 
     for upgrade_path in &manifest.upgrades {
+        //println!("loading: {}", &upgrade_path);
         let path = path.join(upgrade_path);
         let buffer = fs::read_to_string(path)?;
         // TODO: the individual fils are pretty straightforward, so choosing
