@@ -184,6 +184,9 @@ pub fn collection_to_xws_count(
 
     for (e, c) in &collection.expansions {
         let n: u32 = c.parse().unwrap(); // FIXME:
+        if n == 0 {
+            continue;
+        }
         let items = match expansions.get(e) {
             None => {
                 not_found.push(e.to_owned());
