@@ -35,6 +35,13 @@ The initial list of expansion contents was pulled from
 YASB is pretty popular, so the goal will be to remain consistent with their
 expansion naming for collections.
 
+Windows and character encodings. *Run the following nonsense in your PowerShell
+session before trying any of this*:
+
+```shell
+> [System.Console]::OutputEncoding=[System.Text.Encoding]::UTF8
+```
+
 ## Using this tool
 
 1. You will need a working rust toolchain.
@@ -75,7 +82,7 @@ Contributions welcome!
 This is what I did because I couldn't get the toolchain for `raithos/xwing`
 installed correctly.
 
-1. Prerequisite: `node` can be run.
+1. Prerequisite: at least `node` can be run.
 1. Cloned `raithos/xwing`.
 1. Added it to VS Code.
 1. Installed "CoffeeScript Preview" extension.
@@ -87,7 +94,4 @@ installed correctly.
      console.log(JSON.stringify(exportObj.manifestByExpansion, null, 2))
    ```
 
-1. Pipe to a file: `node .\manifest.coffee.js > tmp.json`
-1. There was something very incompatible with the encoding on Windows. The only
-   thing that worked was copying and pasting the entire contents of the file
-   into a new file :shrug:.
+1. Pipe to a file: `node .\manifest.coffee.js > expansions.json`
