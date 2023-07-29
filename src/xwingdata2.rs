@@ -41,9 +41,18 @@ pub enum Restriction {
     Ships,
     Arcs,
     Keywords,
+    //ForceSide,
+    //Equipped,
+    //Action,
 }
 
 #[derive(Deserialize, Debug)]
+pub struct ActionDifficulty {
+    pub r#type: String,
+    pub difficulty: Option<String>,
+}
+
+#[derive(Deserialize, Default, Debug)]
 pub struct Restrictions {
     #[serde(default)]
     pub factions: Vec<String>,
@@ -55,6 +64,12 @@ pub struct Restrictions {
     pub arcs: Vec<String>,
     #[serde(default)]
     pub keywords: Vec<String>,
+    #[serde(default)]
+    pub force_side: Vec<String>,
+    #[serde(default)]
+    pub equipped: Vec<String>,
+    #[serde(default)]
+    pub action: Option<ActionDifficulty>,
 }
 
 #[derive(Deserialize, Debug)]

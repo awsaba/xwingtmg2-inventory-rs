@@ -34,12 +34,34 @@ struct UpgradeRecord {
     pub count: u32,
 }
 
+impl UpgradeRecord {
+    fn new(u: &xwingdata2::Upgrade, c: u32) -> UpgradeRecord {
+        // TODO: there must be a better way
+
+        UpgradeRecord {
+            name: u.name.to_owned(),
+            count: c,
+            r#type: u
+                .sides
+                .first()
+                .map(|s| s.r#type.to_owned())
+                .unwrap_or("not found".to_owned())
+                .to_owned(),
+            faction_restriction: format_restriction(&u.restrictions, Restriction::Factions),
+            size_restriction: format_restriction(&u.restrictions, Restriction::Sizes),
+            ship_restriction: format_restriction(&u.restrictions, Restriction::Ships),
+            keyword_restriction: format_restriction(&u.restrictions, Restriction::Keywords),
+            arc_restriction: format_restriction(&u.restrictions, Restriction::Arcs),
+        }
+    }
+}
+
 fn format_restriction(
     restrictions: &Vec<xwingdata2::Restrictions>,
     kind: xwingdata2::Restriction,
 ) -> String {
     // TODO: I'm sure there is more efficient way to append these
-    let mut tmp = vec![];
+    let mut tmp: Vec<String> = vec![];
     for r in restrictions {
         let criteria = match kind {
             Restriction::Factions => &r.factions,
@@ -116,21 +138,7 @@ fn main() {
     let mut records = vec![];
     for (n, c) in upgrades {
         match xwd_data.get_upgrade(&n) {
-            Some(u) => records.push(UpgradeRecord {
-                name: u.name.to_owned(),
-                count: c,
-                r#type: u
-                    .sides
-                    .first()
-                    .map(|s| s.r#type.to_owned())
-                    .unwrap_or("not found".to_owned())
-                    .to_owned(),
-                faction_restriction: format_restriction(&u.restrictions, Restriction::Factions),
-                size_restriction: format_restriction(&u.restrictions, Restriction::Sizes),
-                ship_restriction: format_restriction(&u.restrictions, Restriction::Ships),
-                keyword_restriction: format_restriction(&u.restrictions, Restriction::Keywords),
-                arc_restriction: format_restriction(&u.restrictions, Restriction::Arcs),
-            }),
+            Some(u) => records.push(UpgradeRecord::new(u, c)),
             None => println!("Upgrade not found: {}", &n),
         };
     }
