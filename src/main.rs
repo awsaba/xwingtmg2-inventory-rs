@@ -3,6 +3,7 @@ use std::fs::File;
 use std::path::Path;
 use std::process::exit;
 
+mod expansions;
 mod xwingdata2;
 mod yasb2;
 
@@ -87,7 +88,7 @@ fn main() {
     };
     //println!("{:?}", xws_data);
 
-    let expansions = match yasb2::load_expansions() {
+    let expansions = match expansions::load_expansions() {
         Ok(e) => e,
         Err(e) => {
             println!("{:?}", e);

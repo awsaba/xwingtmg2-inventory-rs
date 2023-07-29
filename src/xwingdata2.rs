@@ -15,6 +15,13 @@ pub enum CardType {
     Upgrade,
 }
 
+/// Returns true if the card is known to not have a canonical xws id. This is
+/// mostly epic only cards.
+#[allow(dead_code)]
+pub fn known_missing(xws: &str) -> bool {
+    matches!(xws, "sabinewren-prideofmandalore")
+}
+
 #[derive(Deserialize, Debug)]
 pub struct Pilot {
     pub name: String,
@@ -104,6 +111,11 @@ impl Data {
 
     pub(crate) fn get_upgrade(&self, xws: &str) -> Option<&Upgrade> {
         self.upgrades.iter().find(|&u| u.xws == xws)
+    }
+
+    #[allow(dead_code)]
+    pub(crate) fn get_ship(&self, xws: &str) -> Option<&Ship> {
+        self.ships.iter().find(|&s| s.xws == xws)
     }
 }
 

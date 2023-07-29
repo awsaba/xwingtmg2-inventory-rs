@@ -1,24 +1,14 @@
 use serde::Deserialize;
 use serde::Serialize;
-use serde_json::Value;
 use std::collections::HashMap;
 use std::fs;
 use std::io;
-use std::io::ErrorKind;
 use std::path::Path;
 
+use crate::expansions;
+use crate::expansions::Item;
 use crate::xwingdata2;
-use crate::xwingdata2::CardType;
-
-// TODO: Could probably make this an an enum using the `type` field.
-#[derive(Deserialize, Serialize, Debug)]
-pub struct Item {
-    name: String,
-    r#type: String,
-    count: u32,
-}
-
-pub type Expansions = HashMap<String, Vec<Item>>;
+use xwingdata2::CardType;
 
 /// Ships are probably this most common.
 #[derive(Deserialize, Serialize, Debug)]
@@ -40,27 +30,6 @@ pub struct CollectionFile {
     pub collection: Collection,
 }
 
-/// Loads a yasb based expansion content list from embedded file.
-pub fn load_expansions() -> Result<Expansions, io::Error> {
-    //TODO: embed with rust-embed or include_bytes! or something
-    let buffer = fs::read_to_string("./src/expansions.json")?;
-
-    let m: serde_json::Value = serde_json::from_str(&buffer)?;
-    if let Value::Object(ref o) = m {
-        // FIXME: probably hugely memory inefficient
-        let mut expansions: Expansions = HashMap::new();
-        for (k, v) in o {
-            let items: Vec<Item> = serde_json::from_value(v.to_owned())?;
-            expansions.insert(k.to_owned(), items);
-        }
-        return Ok(expansions);
-    }
-    Err(io::Error::new(
-        ErrorKind::Unsupported,
-        "not an expansion listing",
-    ))
-}
-
 /// Load a raw YASB collection obtained from https://yash.app/collection.
 /// Intermediate step that does not turn the strings for the counts back
 /// into numbers.
@@ -71,6 +40,16 @@ pub fn load_collection_file(path: &Path) -> Result<Collection, io::Error> {
     Ok(f.collection)
 }
 
+pub fn to_canonical(name: &str) -> String {
+    name.chars()
+        .filter(|c| c.is_alphanumeric() || c == &'(' || c == &'-')
+        .map(|c| match c {
+            '(' => '-',
+            c => char::to_ascii_lowercase(&c),
+        })
+        .collect::<String>()
+}
+
 /// This function implements special cases where the yasb name does not match
 /// the generated xws name or performs standard xws mapping for everything else.
 ///
@@ -78,14 +57,7 @@ pub fn load_collection_file(path: &Path) -> Result<Collection, io::Error> {
 /// which includes the xws id, but this seems like the least bad way to do this
 /// with the idea of supporting more collection sources.
 pub(crate) fn to_xws(name: &str, typ: xwingdata2::CardType) -> String {
-    let xws = name
-        .chars()
-        .filter(|c| c.is_alphanumeric() || c == &'(')
-        .map(|c| match c {
-            '(' => '-',
-            c => char::to_ascii_lowercase(&c),
-        })
-        .collect::<String>();
+    let xws = to_canonical(name);
     match typ {
         CardType::Pilot => match xws.as_str() {
             "adigallia-delta7b" => "adigallia-delta7baethersprite",
@@ -142,7 +114,7 @@ pub(crate) fn to_xws(name: &str, typ: xwingdata2::CardType) -> String {
 /// collections for now.
 pub fn collection_to_xws_count(
     collection: &Collection,
-    expansions: &Expansions,
+    expansions: &expansions::Expansions,
 ) -> (HashMap<String, u32>, HashMap<String, u32>, Vec<String>) {
     let mut pilots = HashMap::new();
     let mut upgrades = HashMap::new();
@@ -187,7 +159,8 @@ pub fn collection_to_xws_count(
         if n == 0 {
             continue;
         }
-        let items = match expansions.get(e) {
+        let xws = to_canonical(e);
+        let items = match expansions.get(&xws) {
             None => {
                 not_found.push(e.to_owned());
                 continue;
@@ -195,16 +168,14 @@ pub fn collection_to_xws_count(
             Some(items) => items,
         };
         for item in items {
-            match item.r#type.as_str() {
-                "pilot" => {
-                    let xws = to_xws(&item.name, CardType::Pilot);
-                    let total = pilots.get(&xws).unwrap_or(&0) + n * item.count;
-                    pilots.insert(xws, total);
+            match item {
+                Item::Pilot { ref xws, count } => {
+                    let total = pilots.get(xws).unwrap_or(&0) + n * count;
+                    pilots.insert(xws.clone(), total);
                 }
-                "upgrade" => {
-                    let xws = to_xws(&item.name, CardType::Upgrade);
-                    let total = upgrades.get(&xws).unwrap_or(&0) + n * item.count;
-                    upgrades.insert(xws, total);
+                Item::Upgrade { ref xws, count } => {
+                    let total = upgrades.get(xws).unwrap_or(&0) + n * count;
+                    upgrades.insert(xws.clone(), total);
                 }
                 _ => (),
             };
