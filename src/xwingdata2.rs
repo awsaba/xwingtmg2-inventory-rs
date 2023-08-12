@@ -48,6 +48,7 @@ pub enum Restriction {
     Ships,
     Arcs,
     Keywords,
+    ForceSide,
     //ForceSide,
     //Equipped,
     //Action,

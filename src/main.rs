@@ -33,6 +33,7 @@ struct UpgradeRecord {
     pub keyword_restriction: String,
 
     pub count: u32,
+    force_side_restriction: String,
 }
 
 impl UpgradeRecord {
@@ -52,6 +53,7 @@ impl UpgradeRecord {
             size_restriction: format_restriction(&u.restrictions, Restriction::Sizes),
             ship_restriction: format_restriction(&u.restrictions, Restriction::Ships),
             keyword_restriction: format_restriction(&u.restrictions, Restriction::Keywords),
+            force_side_restriction: format_restriction(&u.restrictions, Restriction::ForceSide),
             arc_restriction: format_restriction(&u.restrictions, Restriction::Arcs),
         }
     }
@@ -70,6 +72,7 @@ fn format_restriction(
             Restriction::Ships => &r.ships,
             Restriction::Arcs => &r.arcs,
             Restriction::Keywords => &r.keywords,
+            Restriction::ForceSide => &r.force_side,
         };
         if !criteria.is_empty() {
             tmp.push(criteria.join(","))
