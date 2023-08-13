@@ -15,6 +15,7 @@ use xwingdata2::Restriction;
 struct PilotRecord {
     pub faction: String,
     pub ship: String,
+    pub xws: String,
     pub name: String,
     pub initiative: u32,
 
@@ -25,15 +26,17 @@ struct PilotRecord {
 #[derive(Serialize, Debug)]
 struct UpgradeRecord {
     pub r#type: String,
-    pub faction_restriction: String,
     pub name: String,
+    pub faction_restriction: String,
     pub size_restriction: String,
     pub ship_restriction: String,
     pub arc_restriction: String,
     pub keyword_restriction: String,
 
     pub count: u32,
-    force_side_restriction: String,
+    pub force_side_restriction: String,
+
+    pub xws: String,
 }
 
 impl UpgradeRecord {
@@ -42,6 +45,7 @@ impl UpgradeRecord {
 
         UpgradeRecord {
             name: u.name.to_owned(),
+            xws: u.xws.to_owned(),
             count: c,
             r#type: u
                 .sides
@@ -125,6 +129,7 @@ fn main() {
                 faction: s.faction.to_owned(),
                 ship: s.name.to_owned(),
                 name: p.name.to_owned(),
+                xws: p.xws.to_owned(),
                 initiative: p.initiative,
                 count: c,
             }),
