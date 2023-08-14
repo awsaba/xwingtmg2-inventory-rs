@@ -1,6 +1,5 @@
 .vscode/
 /target
-/xwing-data2/
 
 collection.json
 pilots.json

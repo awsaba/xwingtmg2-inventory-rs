@@ -45,7 +45,8 @@ session before trying any of this*:
 ## Using this tool
 
 1. You will need a working rust toolchain.
-1. Clone the `xwing-data2` repository. (TODO: add as submodule?)
+1. Clone this repo and it's submodules: `git submodule init`
+   1. Note: You may need to update to a more current version of [`xwing-data2`]
 1. Log in to <https://yasb.app>, access your collection at <https://yasb.app/collection>,
    and save the `json` to `collection.json`.
 1. Run the tool with `cargo run`. This will product 2 `json` files, one for pilots
@@ -57,26 +58,12 @@ jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.]
 jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' upgrades.json > upgrades.csv
 ```
 
-## TODOs and other thoughts
+## Contributing to the this repo
 
-Contributions welcome!
+Have a look at the issues.
 
-- Optionally output direct to CSV.
-- Remove `unwrap` and other `rust` no-nos.
-- Add support ships and dials. Like, I have lost track of my T-65s and
-  valid dials I have for them.
-- Tests: Add at least 1 of everything to a collection in YASB and use that as
-  input.
-- GitHub actions for linting, building, and testing.
-- Embed necessary data and build a binary.
-- Generate a lookup from the YASB names to the `xws` id using the yasb card listing.
-- Make expansions support separate from yasb. Working with yasb requires looking up
-  from the YASB expansion and card names to something like XWS name in any case,
-  so this would help to support collection lists from other builders.
-- Use something like [typify](https://github.com/oxidecomputer/typify) to
-  generate a full schema for `xws`. I hand wrote the types for importing needed
-  for my need: tell me how many card organizer pages I need for an upgrade
-  type/faction/restriction.
+This is a basic `rust` project with some tests run in GitHub Actions, try to add
+some tests for anything you are going to add.
 
 ## Initial `expansions.json`
 
@@ -106,8 +93,9 @@ The initial content for `expansions.json` and any `yasb` related conversions
 are from the [`yasb`](https://github.com/raithos) project, copyright
 2012 Geordan Rosario and others uses under an MIT style license.
 
-This also would not be possible with [xwing-data2](https://github.com/guidokessels/xwing-data2),
-also under an MIT license.
+This also would not be possible with [`xwing-data2`], also under an MIT license.
 
 Other content fixes are from the [X-Wing Miniatures: Second Edition Wiki](https://xwing-miniatures-second-edition.fandom.com/wiki/X-Wing_Miniatures:_Second_Edition_Wiki),
 community content is covered by CC BY-SA.
+
+[`xwing-data2`](https://github.com/guidokessels/xwing-data2),

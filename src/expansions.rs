@@ -69,7 +69,7 @@ mod test {
                     _ => continue,
                 };
 
-                //println!("{:?}", item);
+                println!("{:?}", item);
                 assert!(result, "missing expansion item");
 
                 io::stdout().flush().unwrap();
