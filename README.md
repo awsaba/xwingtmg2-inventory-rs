@@ -53,7 +53,8 @@ session before trying any of this*:
 1. Use something like `jq` to turn it into CSV [(from StackOverflow)](https://stackoverflow.com/questions/32960857/how-to-convert-arbitrary-simple-json-to-csv-using-jq):
 
 ```shell
-cat pilots.json | jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv'
+jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' pilots.json > pilots.csv
+jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' upgrades.json > upgrades.csv
 ```
 
 ## TODOs and other thoughts
@@ -95,3 +96,18 @@ installed correctly.
    ```
 
 1. Pipe to a file: `node .\manifest.coffee.js > expansions.json`
+
+## Acknowledgements and Licenses
+
+All Star Wars and X-Wing: TMG content itself is copyright and trademark of its
+owners: FFG/AMG/LucasArts.
+
+The initial content for `expansions.json` and any `yasb` related conversions
+are from the [`yasb`](https://github.com/raithos) project, copyright
+2012 Geordan Rosario and others uses under an MIT style license.
+
+This also would not be possible with [xwing-data2](https://github.com/guidokessels/xwing-data2),
+also under an MIT license.
+
+Other content fixes are from the [X-Wing Miniatures: Second Edition Wiki](https://xwing-miniatures-second-edition.fandom.com/wiki/X-Wing_Miniatures:_Second_Edition_Wiki),
+community content is covered by CC BY-SA.

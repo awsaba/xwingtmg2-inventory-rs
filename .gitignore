@@ -1,3 +1,4 @@
+.vscode/
 /target
 /xwing-data2/
 
@@ -6,3 +7,4 @@ pilots.json
 pilots.csv
 upgrades.json
 upgrades.csv
+*.xlsx

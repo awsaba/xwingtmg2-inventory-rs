@@ -3,6 +3,7 @@ use std::fs::File;
 use std::path::Path;
 use std::process::exit;
 
+mod expansions;
 mod xwingdata2;
 mod yasb2;
 
@@ -14,6 +15,7 @@ use xwingdata2::Restriction;
 struct PilotRecord {
     pub faction: String,
     pub ship: String,
+    pub xws: String,
     pub name: String,
     pub initiative: u32,
 
@@ -24,14 +26,17 @@ struct PilotRecord {
 #[derive(Serialize, Debug)]
 struct UpgradeRecord {
     pub r#type: String,
-    pub faction_restriction: String,
     pub name: String,
+    pub faction_restriction: String,
     pub size_restriction: String,
     pub ship_restriction: String,
     pub arc_restriction: String,
     pub keyword_restriction: String,
 
     pub count: u32,
+    pub force_side_restriction: String,
+
+    pub xws: String,
 }
 
 impl UpgradeRecord {
@@ -40,6 +45,7 @@ impl UpgradeRecord {
 
         UpgradeRecord {
             name: u.name.to_owned(),
+            xws: u.xws.to_owned(),
             count: c,
             r#type: u
                 .sides
@@ -51,6 +57,7 @@ impl UpgradeRecord {
             size_restriction: format_restriction(&u.restrictions, Restriction::Sizes),
             ship_restriction: format_restriction(&u.restrictions, Restriction::Ships),
             keyword_restriction: format_restriction(&u.restrictions, Restriction::Keywords),
+            force_side_restriction: format_restriction(&u.restrictions, Restriction::ForceSide),
             arc_restriction: format_restriction(&u.restrictions, Restriction::Arcs),
         }
     }
@@ -69,6 +76,7 @@ fn format_restriction(
             Restriction::Ships => &r.ships,
             Restriction::Arcs => &r.arcs,
             Restriction::Keywords => &r.keywords,
+            Restriction::ForceSide => &r.force_side,
         };
         if !criteria.is_empty() {
             tmp.push(criteria.join(","))
@@ -87,7 +95,7 @@ fn main() {
     };
     //println!("{:?}", xws_data);
 
-    let expansions = match yasb2::load_expansions() {
+    let expansions = match expansions::load_expansions() {
         Ok(e) => e,
         Err(e) => {
             println!("{:?}", e);
@@ -121,6 +129,7 @@ fn main() {
                 faction: s.faction.to_owned(),
                 ship: s.name.to_owned(),
                 name: p.name.to_owned(),
+                xws: p.xws.to_owned(),
                 initiative: p.initiative,
                 count: c,
             }),
