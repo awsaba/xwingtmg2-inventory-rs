@@ -1,89 +1,13 @@
-use serde::Serialize;
 use std::fs::File;
 use std::path::Path;
 use std::process::exit;
 
-mod expansions;
-mod xwingdata2;
-mod yasb2;
-
-use xwingdata2::Restriction;
-
-/// PilotRecord has fields that I want to sort by so that I can organize my
-/// collection, either in binders or boxes.
-#[derive(Serialize, Debug)]
-struct PilotRecord {
-    pub faction: String,
-    pub ship: String,
-    pub xws: String,
-    pub name: String,
-    pub initiative: u32,
-
-    pub count: u32,
-}
-
-/// UpgradeRecord are the fields I sort my collection by.
-#[derive(Serialize, Debug)]
-struct UpgradeRecord {
-    pub r#type: String,
-    pub name: String,
-    pub faction_restriction: String,
-    pub size_restriction: String,
-    pub ship_restriction: String,
-    pub arc_restriction: String,
-    pub keyword_restriction: String,
-
-    pub count: u32,
-    pub force_side_restriction: String,
-
-    pub xws: String,
-}
-
-impl UpgradeRecord {
-    fn new(u: &xwingdata2::Upgrade, c: u32) -> UpgradeRecord {
-        // TODO: there must be a better way
-
-        UpgradeRecord {
-            name: u.name.to_owned(),
-            xws: u.xws.to_owned(),
-            count: c,
-            r#type: u
-                .sides
-                .first()
-                .map(|s| s.r#type.to_owned())
-                .unwrap_or("not found".to_owned())
-                .to_owned(),
-            faction_restriction: format_restriction(&u.restrictions, Restriction::Factions),
-            size_restriction: format_restriction(&u.restrictions, Restriction::Sizes),
-            ship_restriction: format_restriction(&u.restrictions, Restriction::Ships),
-            keyword_restriction: format_restriction(&u.restrictions, Restriction::Keywords),
-            force_side_restriction: format_restriction(&u.restrictions, Restriction::ForceSide),
-            arc_restriction: format_restriction(&u.restrictions, Restriction::Arcs),
-        }
-    }
-}
-
-fn format_restriction(
-    restrictions: &Vec<xwingdata2::Restrictions>,
-    kind: xwingdata2::Restriction,
-) -> String {
-    // TODO: I'm sure there is more efficient way to append these
-    let mut tmp: Vec<String> = vec![];
-    for r in restrictions {
-        let criteria = match kind {
-            Restriction::Factions => &r.factions,
-            Restriction::Sizes => &r.sizes,
-            Restriction::Ships => &r.ships,
-            Restriction::Arcs => &r.arcs,
-            Restriction::Keywords => &r.keywords,
-            Restriction::ForceSide => &r.force_side,
-        };
-        if !criteria.is_empty() {
-            tmp.push(criteria.join(","))
-        }
-    }
-    tmp.join(",")
-}
+use xwingtmg2_inventory_rs::{
+    expansions::{self, ItemType},
+    xwingdata2,
+    yasb2::{self},
+    PilotRecord, ShipRecord, UpgradeRecord,
+};
 
 fn main() {
     let xwd_data = match xwingdata2::load_from_manifest(Path::new("xwing-data2")) {
@@ -111,31 +35,41 @@ fn main() {
         }
     };
 
-    let (pilots, upgrades, not_found) = yasb2::collection_to_xws_count(&collection, &expansions);
+    let xws_collection = collection.to_xws_collection(&expansions);
 
-    println!("Total unique pilots: {}", pilots.len());
-    println!("Total unique upgrades: {}", upgrades.len());
-
-    println!("Not found factions (probably 1.0, but for debugging):");
-    for n in not_found {
+    println!("Not found expansions (probably 1.0, but for debugging):");
+    for n in xws_collection.missing_expansions {
         println!("- {}", n);
+    }
+
+    println!("Not found singles (for YASB, this is usually old renames in the collections data):");
+    for i in xws_collection.missing_singles {
+        println!("- {}", i.xws);
     }
 
     // TODO: Can some this to_owned() just be references?
     let mut records = vec![];
-    for (n, c) in pilots {
-        match xwd_data.get_pilot(&n) {
-            Some((s, p)) => records.push(PilotRecord {
+    for ic in &xws_collection.item_counts {
+        if ic.item.r#type != ItemType::Pilot {
+            continue;
+        }
+        match xwd_data.get_pilot(&ic.item.xws) {
+            Some((s, p)) => records.push(crate::PilotRecord {
                 faction: s.faction.to_owned(),
                 ship: s.name.to_owned(),
                 name: p.name.to_owned(),
                 xws: p.xws.to_owned(),
                 initiative: p.initiative,
-                count: c,
+                count: ic.count,
             }),
-            None => println!("Pilot not found: {}", &n),
+            None => println!("Pilot not found: {}", ic.item.xws),
         };
     }
+    println!(
+        "Total {} pilots, {} unique",
+        records.iter().fold(0, |acc, r| acc + r.count),
+        records.len()
+    );
 
     // TODO: Find a CSV serializer, but for now, dump as json and use jq
     let f = File::create("pilots.json").unwrap();
@@ -145,16 +79,46 @@ fn main() {
     };
 
     let mut records = vec![];
-    for (n, c) in upgrades {
-        match xwd_data.get_upgrade(&n) {
-            Some(u) => records.push(UpgradeRecord::new(u, c)),
-            None => println!("Upgrade not found: {}", &n),
+    for ic in &xws_collection.item_counts {
+        if ic.item.r#type != ItemType::Upgrade {
+            continue;
+        }
+        match xwd_data.get_upgrade(&ic.item.xws) {
+            Some(u) => records.push(UpgradeRecord::new(u, ic.count)),
+            None => println!("Upgrade not found: {}", &ic.item.xws),
         };
     }
+    println!(
+        "Total {} upgrades, {} unique",
+        records.iter().fold(0, |acc, r| acc + r.count),
+        records.len()
+    );
 
     let f = File::create("upgrades.json").unwrap();
     match serde_json::to_writer(f, &records) {
         Ok(_) => println!("upgrades.json written"),
         Err(err) => println!("upgrades.json error: {}", err),
+    };
+
+    let mut records = vec![];
+    for ic in &xws_collection.item_counts {
+        if ic.item.r#type != ItemType::Ship {
+            continue;
+        }
+        match xwd_data.get_ship(&ic.item.xws) {
+            Some(u) => records.push(ShipRecord::new(u, ic.count)),
+            None => println!("ship not found: {}", &ic.item.xws),
+        };
+    }
+    println!(
+        "Total {} ships, {} unique",
+        records.iter().fold(0, |acc, r| acc + r.count),
+        records.len()
+    );
+
+    let f = File::create("ships.json").unwrap();
+    match serde_json::to_writer(f, &records) {
+        Ok(_) => println!("ships.json written"),
+        Err(err) => println!("ships.json error: {}", err),
     };
 }

@@ -3,16 +3,19 @@
 
 use serde::Deserialize;
 use std::fs;
+use std::hash::{Hash, Hasher};
 use std::io::Error;
 use std::path::Path;
 
-/// CardType the major card categories that appear at top-level of
-/// `xwing-data2/data/manifest.json`. This isn't really given a name in the spec,
-/// but is
-#[derive(Debug)]
-pub enum CardType {
-    Pilot,
-    Upgrade,
+pub trait Xws {
+    /// Returns the xws id of the item.
+    fn xws(&self) -> &str;
+}
+
+impl Hash for dyn Xws {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.xws().hash(state);
+    }
 }
 
 /// Returns true if the card is known to not have a canonical xws id. This is
@@ -29,12 +32,24 @@ pub struct Pilot {
     pub initiative: u32,
 }
 
+impl Xws for Pilot {
+    fn xws(&self) -> &str {
+        &self.xws
+    }
+}
+
 #[derive(Deserialize, Debug)]
 pub struct Ship {
     pub name: String,
     pub xws: String,
     pub faction: String,
     pub pilots: Vec<Pilot>,
+}
+
+impl Xws for Ship {
+    fn xws(&self) -> &str {
+        &self.xws
+    }
 }
 
 #[derive(Deserialize, Debug)]
@@ -49,7 +64,6 @@ pub enum Restriction {
     Arcs,
     Keywords,
     ForceSide,
-    //ForceSide,
     //Equipped,
     //Action,
 }
@@ -90,6 +104,12 @@ pub struct Upgrade {
     pub restrictions: Vec<Restrictions>,
 }
 
+impl Xws for Upgrade {
+    fn xws(&self) -> &str {
+        &self.xws
+    }
+}
+
 // TODO: The goal is have them all in one list, and let a spreadsheet
 #[derive(Deserialize, Debug)]
 pub struct Data {
@@ -99,7 +119,7 @@ pub struct Data {
 }
 
 impl Data {
-    pub(crate) fn get_pilot(&self, xws: &str) -> Option<(&Ship, &Pilot)> {
+    pub fn get_pilot(&self, xws: &str) -> Option<(&Ship, &Pilot)> {
         for s in &self.ships {
             for p in &s.pilots {
                 if p.xws == xws {
@@ -110,12 +130,11 @@ impl Data {
         None
     }
 
-    pub(crate) fn get_upgrade(&self, xws: &str) -> Option<&Upgrade> {
+    pub fn get_upgrade(&self, xws: &str) -> Option<&Upgrade> {
         self.upgrades.iter().find(|&u| u.xws == xws)
     }
 
-    #[allow(dead_code)]
-    pub(crate) fn get_ship(&self, xws: &str) -> Option<&Ship> {
+    pub fn get_ship(&self, xws: &str) -> Option<&Ship> {
         self.ships.iter().find(|&s| s.xws == xws)
     }
 }
@@ -163,8 +182,6 @@ pub fn load_from_manifest(path: &Path) -> Result<Data, Error> {
         for pilot_path in &faction.ships {
             let path = path.join(pilot_path);
             let buffer = fs::read_to_string(path)?;
-            // TODO: the individual fils are pretty straightforward, so choosing
-            // not to create a struct here yet
             let ship: Ship = serde_json::from_str(&buffer)?;
             data.ships.push(ship);
         }

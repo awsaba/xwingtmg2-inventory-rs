@@ -6,16 +6,14 @@ use std::io;
 use std::path::Path;
 
 use crate::expansions;
-use crate::expansions::Item;
-use crate::xwingdata2;
-use xwingdata2::CardType;
+use crate::expansions::{Item, ItemCount, ItemType};
 
 /// Ships are probably this most common.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Singletons {
-    pub ships: Option<HashMap<String, String>>,
-    pub upgrades: Option<HashMap<String, String>>,
-    pub pilots: Option<HashMap<String, String>>,
+    pub ship: Option<HashMap<String, String>>,
+    pub upgrade: Option<HashMap<String, String>>,
+    pub pilot: Option<HashMap<String, String>>,
 }
 
 #[derive(Deserialize, Serialize, Debug)]
@@ -42,7 +40,7 @@ pub fn load_collection_file(path: &Path) -> Result<Collection, io::Error> {
 
 pub fn to_canonical(name: &str) -> String {
     name.chars()
-        .filter(|c| c.is_alphanumeric() || c == &'(' || c == &'-')
+        .filter(|c| c.is_alphanumeric() || c == &'(')
         .map(|c| match c {
             '(' => '-',
             c => char::to_ascii_lowercase(&c),
@@ -56,10 +54,10 @@ pub fn to_canonical(name: &str) -> String {
 /// It would be necessary to either import the full card list from YASB's source,
 /// which includes the xws id, but this seems like the least bad way to do this
 /// with the idea of supporting more collection sources.
-pub(crate) fn to_xws(name: &str, typ: xwingdata2::CardType) -> String {
+pub(crate) fn to_xws(name: &str, typ: expansions::ItemType) -> String {
     let xws = to_canonical(name);
     match typ {
-        CardType::Pilot => match xws.as_str() {
+        ItemType::Pilot => match xws.as_str() {
             "adigallia-delta7b" => "adigallia-delta7baethersprite",
             "ahsokatano-awing" => "ahsokatano-rz1awing",
             "blacksquadronace-t70" => "blacksquadronace-t70xwing",
@@ -91,7 +89,7 @@ pub(crate) fn to_xws(name: &str, typ: xwingdata2::CardType) -> String {
             "zeborrelios-tiefighter" => "zeborrelios-tielnfighter",
             x => x,
         },
-        CardType::Upgrade => match xws.as_str() {
+        ItemType::Upgrade => match xws.as_str() {
             "b6bladewingprototype-epic" => "b6bladewingprototype-command",
             "c3po-resistance" => "c3po-crew",
             "chewbacca-resistance" => "chewbacca-crew",
@@ -101,86 +99,164 @@ pub(crate) fn to_xws(name: &str, typ: xwingdata2::CardType) -> String {
             "vectoredcannons-rz1" => "vectoredcannonsrz1",
             x => x,
         },
+        ItemType::Ship => match xws.as_str() {
+            /* in case anyone asks: these are 1.0 ships that have been
+               renamed over time in yasb, but the old records are not
+               cleared with "Reset my Collection" */
+            /* "arc170" => "arc170starfighter",
+            "awing" => "rz1awing",
+            "bsf17bomber" => "mg100starfortress",
+            "bwing" => "asf01bwing",
+            "firespray31" => "firesprayclasspatrolcraft",
+            "gozanticlasscruiser" => "gozanticlasscruiser",
+            "hwk290" => "hwk290lightfreighter",
+            "kwing" => "btls8kwing",
+            "lambdaclassshuttle" => "lambdaclasst4ashuttle",
+            "mg100starfortress" => "mg100starfortress",
+            "quadjumper" => "quadrijettransferspacetug",
+            "starviper" => "starviperclassattackplatform",
+            "tieadvanced" => "tieadvancedx1",
+            "tieadvancedprototype" => "tieadvancedv1",
+            "tieaggressor" => "tieagaggressor",
+            "tiebomber" => "tiesabomber",
+            "tiedefender" => "tieddefender",
+            "tiefighter" => "tielnfighter",
+            "tieinterceptor" => "tieininterceptor",
+            "tiesilencer" => "tievnsilencer",
+            "tiestriker" => "tieskstriker",
+            "upsilonclasscommandshuttle" => "upsilonclassshuttle",
+            "uwing" => "ut60duwing",
+            "vcx100" => "vcx100lightfreighter",
+            "xwing" => "t65xwing",
+            "yt1300-resistance" => "scavengedyt1300",
+            "yt1300" => "modifiedyt1300lightfreighter",
+            "yt2400" => "yt2400lightfreighter",
+            "ywing" => "btla4ywing",
+            "z95headhunter" => "z95af4headhunter",
+            */
+            _ => xws.as_str(),
+        },
+        _ => xws.as_str(),
     }
     .to_string()
 }
 
-/// Returns base counts
-///
-/// Does not verify the xws ids that are returned agains xwing-data2.
-///
-/// The XWS spec defines `pilot` and `updgrade` as being independent namespaces,
-/// so a combined key could be used, but just be explicit with separate
-/// collections for now.
-pub fn collection_to_xws_count(
-    collection: &Collection,
-    expansions: &expansions::Expansions,
-) -> (HashMap<String, u32>, HashMap<String, u32>, Vec<String>) {
-    let mut pilots = HashMap::new();
-    let mut upgrades = HashMap::new();
-    let mut not_found: Vec<String> = vec![];
+/// Flat list of item counts and not found things in a collection.
+/// TODO: Move to a more generic module that can be referenced by multiple
+/// collection sources.
+pub struct XwsCollection {
+    pub item_counts: Vec<ItemCount>,
+    pub missing_singles: Vec<Item>,
+    pub missing_expansions: Vec<String>,
+}
 
-    // TODO: This is some terrible, non-idiomatic rust
-    if let Collection {
-        singletons: Some(Singletons {
-            upgrades: Some(us), ..
-        }),
-        ..
-    } = collection
-    {
-        for (name, c) in us {
-            let n: u32 = c.parse().unwrap(); // FIXME:
-            let xws = to_xws(name, CardType::Upgrade);
-            // TODO: make upgrades into a map?
-            // FIXME: at the very least, check for dupes somewhere
-            let total = upgrades.get(&xws).unwrap_or(&0) + n;
-            upgrades.insert(xws, total);
-        }
-    }
-    if let Collection {
-        singletons: Some(Singletons {
-            pilots: Some(ps), ..
-        }),
-        ..
-    } = collection
-    {
-        for (name, c) in ps {
-            let n: u32 = c.parse().unwrap(); // FIXME:
-            let xws = to_xws(name, CardType::Pilot);
-            // TODO: make upgrades into a map?
-            // FIXME: at the very least, check for dupes somewhere
-            let total = pilots.get(&xws).unwrap_or(&0) + n;
-            pilots.insert(xws, total);
-        }
-    }
+impl Collection {
+    /// Returns base counts
+    ///
+    /// Assumes that the `expansiions` contains all valid items that exist in
+    /// xwing-data2 when determining what is missing.
+    pub fn to_xws_collection(&self, expansions: &expansions::Expansions) -> XwsCollection {
+        let mut item_counts: HashMap<Item, u32> = HashMap::new();
+        let mut missing_singles: Vec<Item> = vec![];
+        let mut missing_expansions: Vec<String> = vec![];
 
-    for (e, c) in &collection.expansions {
-        let n: u32 = c.parse().unwrap(); // FIXME:
-        if n == 0 {
-            continue;
+        // TODO: This is some terrible, non-idiomatic rust
+        if let Collection {
+            singletons: Some(ref singles),
+            ..
+        } = self
+        {
+            for (name, c) in singles.upgrade.as_ref().unwrap_or(&HashMap::new()) {
+                let n: u32 = c.parse().unwrap(); // FIXME:
+                if n == 0 {
+                    continue;
+                }
+                let item = Item {
+                    r#type: ItemType::Upgrade,
+                    xws: to_xws(&name, ItemType::Upgrade),
+                };
+                if !expansions::has_item(expansions, &item) {
+                    missing_singles.push(item);
+                    continue;
+                }
+                if let Some(_) = item_counts.get(&item) {
+                    println!("YASB: ignoring duplicate item: {}", name);
+                    continue;
+                }
+                item_counts.insert(item, n);
+            }
+            for (name, c) in singles.pilot.as_ref().unwrap_or(&HashMap::new()) {
+                let n: u32 = c.parse().unwrap(); // FIXME:
+                if n == 0 {
+                    continue;
+                }
+                let item = Item {
+                    r#type: ItemType::Pilot,
+                    xws: to_xws(name, ItemType::Pilot),
+                };
+                if !expansions::has_item(expansions, &item) {
+                    missing_singles.push(item);
+                    continue;
+                }
+                if let Some(_) = item_counts.get(&item) {
+                    println!("YASB: ignoring duplicate item: {}", name);
+                    continue;
+                }
+                item_counts.insert(item, n);
+            }
+            for (name, c) in singles.ship.as_ref().unwrap_or(&HashMap::new()) {
+                let n: u32 = c.parse().unwrap(); // FIXME:
+                if n == 0 {
+                    continue;
+                }
+                let item = Item {
+                    r#type: ItemType::Ship,
+                    xws: to_xws(name, ItemType::Ship),
+                };
+                if !expansions::has_item(expansions, &item) {
+                    missing_singles.push(item);
+                    continue;
+                }
+                if let Some(_) = item_counts.get(&item) {
+                    println!("YASB: ignoring duplicate item: {}", name);
+                    continue;
+                }
+                item_counts.insert(item, n);
+            }
         }
-        let xws = to_canonical(e);
-        let items = match expansions.get(&xws) {
-            None => {
-                not_found.push(e.to_owned());
+
+        for (e, c) in &self.expansions {
+            let n: u32 = c.parse().unwrap(); // FIXME:
+            if n == 0 {
                 continue;
             }
-            Some(items) => items,
-        };
-        for item in items {
-            match item {
-                Item::Pilot { ref xws, count } => {
-                    let total = pilots.get(xws).unwrap_or(&0) + n * count;
-                    pilots.insert(xws.clone(), total);
+            let xws = to_canonical(e);
+            let items = match expansions.get(&xws) {
+                None => {
+                    missing_expansions.push(e.to_owned());
+                    continue;
                 }
-                Item::Upgrade { ref xws, count } => {
-                    let total = upgrades.get(xws).unwrap_or(&0) + n * count;
-                    upgrades.insert(xws.clone(), total);
-                }
-                _ => (),
+                Some(items) => items,
             };
+            for item_count in items {
+                let total = item_counts.get(&item_count.item).unwrap_or(&0) + n * item_count.count;
+                item_counts.insert(item_count.item.clone(), total);
+            }
+        }
+
+        XwsCollection {
+            item_counts: item_counts
+                .iter()
+                .map(|(k, v)| ItemCount {
+                    item: Item {
+                        r#type: k.r#type,
+                        xws: k.xws.clone(),
+                    },
+                    count: *v,
+                })
+                .collect(),
+            missing_expansions,
+            missing_singles,
         }
     }
-
-    (pilots, upgrades, not_found)
 }
