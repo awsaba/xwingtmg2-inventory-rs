@@ -11624,5 +11624,102 @@
       "type": "upgrade",
       "count": 1
     }
+  ],
+  "looseships": [
+    {
+      "xws": "alphaclassstarwing",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "attackshuttle",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "auzituckgunship",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "btls8kwing",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "ewing",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "g1astarfighter",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "gozanticlasscruiser",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "kihraxzfighter",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "lancerclasspursuitcraft",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "lambdaclasst4ashuttle",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "m12lkimogilafighter",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "mg100starfortress",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "quadrijettransferspacetug",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "scavengedyt1300",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "scurrgh6bomber",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "starviperclassattackplatform",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "tieagaggressor",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "upsilonclassshuttle",
+      "type": "ship",
+      "count": 1
+    },
+    {
+      "xws": "yt2400lightfreighter",
+      "type": "ship",
+      "count": 1
+    }
   ]
 }

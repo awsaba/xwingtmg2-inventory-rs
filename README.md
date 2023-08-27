@@ -28,9 +28,10 @@ Why rust?
 ## Challenges
 
 XWS has a definitive definition of every item in the game, but `xwing-data2`
-lacks a listing of expansion contents, so that will continue to be updated.
+lacks a listing of expansion contents, so [expansions.json](src/expansions.json)
+will need to continue to be updated.
 
-The initial list of expansion contents was pulled from
+YASB renames
 
 YASB is pretty popular, so the goal will be to remain consistent with their
 expansion naming for collections.
@@ -42,13 +43,21 @@ session before trying any of this*:
 > [System.Console]::OutputEncoding=[System.Text.Encoding]::UTF8
 ```
 
+## Getting your collection
+
+Log in to <https://yasb.app>, access your collection at <https://yasb.app/collection>,
+   and save the `json` to `collection.json`.
+
+> **Note**
+> YASB has renamed ships/expansions over time, so if you haven't
+> "Reset my collection" in a while, you may end up with a collection that double
+> counts items.
+
 ## Using this tool
 
 1. You will need a working rust toolchain.
 1. Clone this repo and it's submodules: `git submodule init`
    1. Note: You may need to update to a more current version of [`xwing-data2`]
-1. Log in to <https://yasb.app>, access your collection at <https://yasb.app/collection>,
-   and save the `json` to `collection.json`.
 1. Run the tool with `cargo run`. This will product 2 `json` files, one for pilots
    and one for upgrades.
 1. Use something like `jq` to turn it into CSV [(from StackOverflow)](https://stackoverflow.com/questions/32960857/how-to-convert-arbitrary-simple-json-to-csv-using-jq):
@@ -64,6 +73,12 @@ Have a look at the issues.
 
 This is a basic `rust` project with some tests run in GitHub Actions, try to add
 some tests for anything you are going to add.
+
+### Adding new expansions
+
+1. Add expansion.
+1. ...
+1. Check if any ships can be removed from the `looseships` placeholder.
 
 ## Initial `expansions.json`
 
