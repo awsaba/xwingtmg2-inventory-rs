@@ -6,4 +6,6 @@ pilots.json
 pilots.csv
 upgrades.json
 upgrades.csv
+ships.json
+ships.csv
 *.xlsx
