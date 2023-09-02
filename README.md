@@ -82,22 +82,7 @@ some tests for anything you are going to add.
 
 ## Initial `expansions.json`
 
-This is what I did because I couldn't get the toolchain for `raithos/xwing`
-installed correctly.
-
-1. Prerequisite: at least `node` can be run.
-1. Cloned `raithos/xwing`.
-1. Added it to VS Code.
-1. Installed "CoffeeScript Preview" extension.
-1. Previewed `coffeescript/content/manifest.coffee`, save the produced JavaScript file.
-1. Add the following to generated file:
-
-   ```javascript
-     util = require('util')
-     console.log(JSON.stringify(exportObj.manifestByExpansion, null, 2))
-   ```
-
-1. Pipe to a file: `node .\manifest.coffee.js > expansions.json`
+See [this terrible script](https://github.com/awsaba/xwing/blob/awsaba/xws-content-dumper/coffeescripts/content/dump-content.coffee).
 
 ## Acknowledgements and Licenses
 

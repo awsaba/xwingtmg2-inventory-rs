@@ -22,7 +22,7 @@ impl Hash for dyn Xws {
 /// mostly epic only cards.
 #[allow(dead_code)]
 pub fn known_missing(xws: &str) -> bool {
-    matches!(xws, "sabinewren-prideofmandalore")
+    matches!(xws, "sabinewren-swz93")
 }
 
 #[derive(Deserialize, Debug)]

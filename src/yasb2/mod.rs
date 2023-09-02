@@ -230,18 +230,22 @@ impl Collection {
             if n == 0 {
                 continue;
             }
-            let xws = to_canonical(e);
-            let items = match expansions.get(&xws) {
-                None => {
-                    missing_expansions.push(e.to_owned());
+
+            for expansion in expansions {
+                if expansion.edition() != 2 {
                     continue;
                 }
-                Some(items) => items,
-            };
-            for item_count in items {
-                let total = item_counts.get(&item_count.item).unwrap_or(&0) + n * item_count.count;
-                item_counts.insert(item_count.item.clone(), total);
+                if &expansion.name == e {
+                    for item_count in &expansion.contents {
+                        let total =
+                            item_counts.get(&item_count.item).unwrap_or(&0) + n * item_count.count;
+                        item_counts.insert(item_count.item.clone(), total);
+                    }
+                    continue;
+                }
             }
+
+            missing_expansions.push(e.to_owned());
         }
 
         XwsCollection {
