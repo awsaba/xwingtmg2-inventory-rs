@@ -30,14 +30,9 @@
 //!     ]
 //! }
 //! ```
-use std::{
-    collections::HashMap,
-    fs,
-    io::{self, ErrorKind},
-};
+use std::{fs, io};
 
 use serde::{Deserialize, Serialize};
-use serde_json::Value;
 
 #[derive(Deserialize, Serialize, Eq, PartialEq, Hash, Copy, Clone, Debug)]
 pub enum ItemType {
@@ -70,12 +65,31 @@ pub struct ItemCount {
     pub count: u32,
 }
 
-pub type Expansions = HashMap<String, Vec<ItemCount>>;
+#[derive(Deserialize, Serialize, Debug)]
+#[serde(tag = "type")]
+pub struct Expansion {
+    pub sku: String,
+    pub name: String,
+    pub contents: Vec<ItemCount>,
+}
+
+impl Expansion {
+    /// edition returns 1, 2, or 0 if unknown
+    pub fn edition(&self) -> u8 {
+        match self.sku.chars().nth(2) {
+            Some('z') | Some('Z') => 2,
+            Some('x') | Some('X') => 1,
+            Some(_) | None => 0,
+        }
+    }
+}
+
+pub type Expansions = Vec<Expansion>;
 
 /// TODO: Should be a real impl?
 pub fn has_item(expansions: &Expansions, item: &Item) -> bool {
-    for (_, e) in expansions.iter() {
-        for i in e.iter() {
+    for e in expansions.iter() {
+        for i in &e.contents {
             if &i.item == item {
                 return true;
             }
@@ -87,22 +101,10 @@ pub fn has_item(expansions: &Expansions, item: &Item) -> bool {
 /// Loads a yasb based expansion content list from embedded file.
 pub fn load_expansions() -> Result<Expansions, io::Error> {
     //TODO: embed with rust-embed or include_bytes! or something
-    let buffer = fs::read_to_string("./src/expansions.json")?;
+    let buffer = fs::read_to_string("./src/expansions/expansions.json")?;
 
-    let m: Value = serde_json::from_str(&buffer)?;
-    if let Value::Object(ref o) = m {
-        // FIXME: probably hugely memory inefficient
-        let mut expansions: Expansions = HashMap::new();
-        for (k, v) in o {
-            let items: Vec<ItemCount> = serde_json::from_value(v.to_owned())?;
-            expansions.insert(k.to_owned(), items);
-        }
-        return Ok(expansions);
-    }
-    Err(io::Error::new(
-        ErrorKind::Unsupported,
-        "not an expansion listing",
-    ))
+    let expansions = serde_json::from_str(&buffer)?;
+    return Ok(expansions);
 }
 
 #[cfg(test)]
@@ -120,8 +122,11 @@ mod test {
 
         let d = xwingdata2::load_from_manifest(Path::new("xwing-data2")).unwrap();
 
-        for (_, contents) in r.iter() {
-            for item_count in contents {
+        for e in r.iter() {
+            if e.edition() != 2 {
+                continue;
+            }
+            for item_count in &e.contents {
                 let result = match item_count {
                     ItemCount {
                         item:
@@ -130,7 +135,7 @@ mod test {
                                 xws,
                             },
                         ..
-                    } => d.get_ship(xws).is_some() || known_missing(xws),
+                    } => d.get_ship(&xws).is_some() || known_missing(&xws),
                     ItemCount {
                         item:
                             Item {
@@ -138,7 +143,7 @@ mod test {
                                 xws,
                             },
                         ..
-                    } => d.get_pilot(xws).is_some() || known_missing(xws),
+                    } => d.get_pilot(&xws).is_some() || known_missing(&xws),
                     ItemCount {
                         item:
                             Item {
@@ -146,7 +151,7 @@ mod test {
                                 xws,
                             },
                         ..
-                    } => d.get_upgrade(xws).is_some() || known_missing(xws),
+                    } => d.get_upgrade(&xws).is_some() || known_missing(&xws),
                     _ => continue,
                 };
 
