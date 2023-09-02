@@ -11958,6 +11958,203 @@
     "sku": "swz106"
   },
   {
+    "name": "YT-2400 Light Freighter Expansion Pack",
+    "contents": [
+      {
+        "type": "ship",
+        "count": 1,
+        "xws": "yt2400lightfreighter"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "dashrendar"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "leebo"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "dashrendar-swz103"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "leebo-swz103"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "dashrendar-swz103-sl-scumandvillainy"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "leebo-swz103-sl-scumandvillainy"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "lonewolf"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "protonrockets"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "heavylasercannon"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "landocalrissian"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "hotshotgunner"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "veteranturretgunner"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "riggedcargochute"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "outrider"
+      }
+    ],
+    "sku": "swz103"
+  },
+  {
+    "name": "TIE/sa TIE Bomber Expansion Pack",
+    "contents": [
+      {
+        "type": "ship",
+        "count": 2,
+        "xws": "tiesabomber"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "deathfire"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "captainjonus"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "tomaxbren"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "majorrhymer"
+      },
+      {
+        "type": "pilot",
+        "count": 2,
+        "xws": "scimitarsquadronpilot"
+      },
+      {
+        "type": "pilot",
+        "count": 2,
+        "xws": "gammasquadronace"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "deathfire-swz98"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "captainjonus-swz98"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "tomaxbren-swz98"
+      },
+      {
+        "type": "pilot",
+        "count": 1,
+        "xws": "majorrhymer-swz98"
+      },
+      {
+        "type": "upgrade",
+        "count": 2,
+        "xws": "advprotontorpedoes"
+      },
+      {
+        "type": "upgrade",
+        "count": 2,
+        "xws": "protonbombs"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "connernets"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "seismiccharges"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "clustermissiles"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "saturationsalvo"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "ionmissiles"
+      },
+      {
+        "type": "upgrade",
+        "count": 1,
+        "xws": "skilledbombardier"
+      },
+      {
+        "type": "upgrade",
+        "count": 2,
+        "xws": "ionbombs"
+      },
+      {
+        "type": "upgrade",
+        "count": 2,
+        "xws": "feedbackping"
+      },
+      {
+        "type": "upgrade",
+        "count": 2,
+        "xws": "disciplined"
+      }
+    ],
+    "sku": "swz98"
+  },
+  {
     "name": "Unreleased for 2nd Edition",
     "contents": [
       {
@@ -12047,11 +12244,6 @@
       },
       {
         "xws": "upsilonclassshuttle",
-        "type": "ship",
-        "count": 1
-      },
-      {
-        "xws": "yt2400lightfreighter",
         "type": "ship",
         "count": 1
       }
