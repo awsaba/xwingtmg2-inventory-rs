@@ -6,7 +6,7 @@ use xwingtmg2_inventory_rs::{
     expansions::{self, ItemType},
     xwingdata2,
     yasb2::{self},
-    PilotRecord, ShipRecord, UpgradeRecord,
+    Collection, PilotRecord, ShipRecord, UpgradeRecord,
 };
 
 fn main() {
@@ -27,7 +27,7 @@ fn main() {
         }
     };
 
-    let collection = match yasb2::load_collection_file(Path::new("collection.json")) {
+    let yasb_coll = match yasb2::load_collection_file(Path::new("collection.json")) {
         Ok(c) => c,
         Err(e) => {
             println!("{:?}", e);
@@ -35,34 +35,53 @@ fn main() {
         }
     };
 
-    let xws_collection = collection.to_xws_collection(&expansions);
+    let (skus, missing) = yasb_coll.expansion_skus(&expansions);
 
     println!("Not found expansions (probably 1.0, but for debugging):");
-    for n in xws_collection.missing_expansions {
+    for n in missing {
         println!("- {}", n);
     }
 
-    println!("Not found singles (for YASB, this is usually old renames in the collections data):");
-    for i in xws_collection.missing_singles {
-        println!("- {}", i.xws);
+    let collection = Collection {
+        skus,
+        singles: yasb_coll.singles_as_xws(),
+    };
+
+    let (inventory, missing) = collection.inventory(expansions);
+    if !missing.is_empty() {
+        println!("YASB module added a not found expansion without reporting:");
+        for n in missing {
+            println!("- {}", n);
+        }
     }
 
     // TODO: Can some this to_owned() just be references?
+    // TODO: Find a CSV serializer, but for now, dump as json and use jq
+
+    ships_json(&inventory, &xwd_data);
+    pilots_json(&inventory, &xwd_data);
+    upgrades_json(&inventory, &xwd_data);
+}
+
+fn pilots_json(
+    inventory: &std::collections::BTreeMap<expansions::Item, u32>,
+    xwd_data: &xwingdata2::Data,
+) {
     let mut records = vec![];
-    for ic in &xws_collection.item_counts {
-        if ic.item.r#type != ItemType::Pilot {
+    for (item, count) in inventory {
+        if item.r#type != ItemType::Pilot {
             continue;
         }
-        match xwd_data.get_pilot(&ic.item.xws) {
+        match xwd_data.get_pilot(&item.xws) {
             Some((s, p)) => records.push(crate::PilotRecord {
                 faction: s.faction.to_owned(),
                 ship: s.name.to_owned(),
                 name: p.name.to_owned(),
                 xws: p.xws.to_owned(),
                 initiative: p.initiative,
-                count: ic.count,
+                count: *count,
             }),
-            None => println!("Pilot not found: {}", ic.item.xws),
+            None => println!("Pilot not found: {}", item.xws),
         };
     }
     println!(
@@ -71,21 +90,25 @@ fn main() {
         records.len()
     );
 
-    // TODO: Find a CSV serializer, but for now, dump as json and use jq
     let f = File::create("pilots.json").unwrap();
     match serde_json::to_writer(f, &records) {
         Ok(_) => println!("pilots.json written"),
         Err(err) => println!("pilots.json error: {}", err),
     };
+}
 
+fn upgrades_json(
+    inventory: &std::collections::BTreeMap<expansions::Item, u32>,
+    xwd_data: &xwingdata2::Data,
+) {
     let mut records = vec![];
-    for ic in &xws_collection.item_counts {
-        if ic.item.r#type != ItemType::Upgrade {
+    for (item, count) in inventory {
+        if item.r#type != ItemType::Upgrade {
             continue;
         }
-        match xwd_data.get_upgrade(&ic.item.xws) {
-            Some(u) => records.push(UpgradeRecord::new(u, ic.count)),
-            None => println!("Upgrade not found: {}", &ic.item.xws),
+        match xwd_data.get_upgrade(&item.xws) {
+            Some(u) => records.push(UpgradeRecord::new(u, *count)),
+            None => println!("Upgrade not found: {}", &item.xws),
         };
     }
     println!(
@@ -99,15 +122,20 @@ fn main() {
         Ok(_) => println!("upgrades.json written"),
         Err(err) => println!("upgrades.json error: {}", err),
     };
+}
 
+fn ships_json(
+    inventory: &std::collections::BTreeMap<expansions::Item, u32>,
+    xwd_data: &xwingdata2::Data,
+) {
     let mut records = vec![];
-    for ic in &xws_collection.item_counts {
-        if ic.item.r#type != ItemType::Ship {
+    for (item, count) in inventory {
+        if item.r#type != ItemType::Ship {
             continue;
         }
-        match xwd_data.get_ship(&ic.item.xws) {
-            Some(u) => records.push(ShipRecord::new(u, ic.count)),
-            None => println!("ship not found: {}", &ic.item.xws),
+        match xwd_data.get_ship(&item.xws) {
+            Some(u) => records.push(ShipRecord::new(u, *count)),
+            None => println!("ship not found: {}", &item.xws),
         };
     }
     println!(

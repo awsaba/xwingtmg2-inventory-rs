@@ -2,13 +2,12 @@
 // is necessary for some basic collection management.
 
 use serde::{Deserialize, Serialize};
-use std::fmt::Display;
 use std::fs;
 use std::hash::{Hash, Hasher};
 use std::io::Error;
 use std::path::Path;
 
-#[derive(Deserialize, Serialize, Eq, PartialEq, Hash, Copy, Clone, Debug)]
+#[derive(Deserialize, Serialize, PartialOrd, Eq, PartialEq, Hash, Copy, Clone, Debug)]
 pub enum SlotKind {
     Astromech,
     Cannon,
@@ -17,6 +16,7 @@ pub enum SlotKind {
     Configuration,
     Crew,
     Device,
+    #[serde(alias = "Force Power")]
     ForcePower,
     Gunner,
     Hardpoint,
@@ -25,6 +25,7 @@ pub enum SlotKind {
     Missile,
     Modification,
     Sensor,
+    #[serde(alias = "Tactical Relay")]
     TacticalRelay,
     Talent,
     Team,
@@ -34,13 +35,7 @@ pub enum SlotKind {
     Turret,
 }
 
-impl Display for SlotKind {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self)
-    }
-}
-
-#[derive(Deserialize, Serialize, Eq, PartialEq, Hash, Copy, Clone, Debug)]
+#[derive(Deserialize, Serialize, PartialOrd, Eq, PartialEq, Hash, Copy, Clone, Debug)]
 pub enum XwsKind {
     #[serde(alias = "ship")]
     Ship,
@@ -70,6 +65,25 @@ pub trait XwsId {
 impl Hash for dyn XwsId {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.xws().hash(state);
+        self.kind().hash(state);
+    }
+}
+
+impl PartialOrd for dyn XwsId {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (
+            self.xws().partial_cmp(other.xws()),
+            self.kind().partial_cmp(&other.kind()),
+        ) {
+            (Some(o1), Some(o2)) => Some(o1.then(o2)),
+            _ => None,
+        }
+    }
+}
+
+impl PartialEq for dyn XwsId {
+    fn eq(&self, other: &Self) -> bool {
+        self.xws() == other.xws() && self.kind() == other.kind()
     }
 }
 
@@ -80,7 +94,7 @@ pub fn known_missing(xws: &str) -> bool {
     matches!(xws, "sabinewren-swz93") // this is the epic commmand/crew card
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct Pilot {
     pub name: String,
     pub xws: String,
@@ -129,13 +143,13 @@ pub enum Restriction {
     //Action,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Hash, Eq, PartialEq, Deserialize, Debug)]
 pub struct ActionDifficulty {
     pub r#type: String,
     pub difficulty: Option<String>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Hash, PartialEq, Eq, Deserialize, Default, Debug)]
 pub struct Restrictions {
     #[serde(default)]
     pub factions: Vec<String>,
