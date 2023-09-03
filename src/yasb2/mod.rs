@@ -225,7 +225,7 @@ impl Collection {
             }
         }
 
-        for (e, c) in &self.expansions {
+        'exp_search: for (e, c) in &self.expansions {
             let n: u32 = c.parse().unwrap(); // FIXME:
             if n == 0 {
                 continue;
@@ -241,7 +241,7 @@ impl Collection {
                             item_counts.get(&item_count.item).unwrap_or(&0) + n * item_count.count;
                         item_counts.insert(item_count.item.clone(), total);
                     }
-                    continue;
+                    continue 'exp_search;
                 }
             }
 

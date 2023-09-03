@@ -76,6 +76,12 @@ pub struct Expansion {
 impl Expansion {
     /// edition returns 1, 2, or 0 if unknown
     pub fn edition(&self) -> u8 {
+        // expansions won't work if v1 support is ever fully implemented without
+        // adding expansion per-item or somehow splitting the ones that are
+        // both
+        if self.sku == "swx74" || self.sku == "swx75" {
+            return 2;
+        }
         match self.sku.chars().nth(2) {
             Some('z') | Some('Z') => 2,
             Some('x') | Some('X') => 1,

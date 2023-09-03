@@ -1,5 +1,6 @@
 use serde::Serialize;
 
+pub mod collection;
 pub mod expansions;
 pub mod xwingdata2;
 pub mod yasb2;
@@ -69,7 +70,7 @@ impl UpgradeRecord {
             r#type: u
                 .sides
                 .first()
-                .map(|s| s.r#type.to_owned())
+                .map(|s| format!("{}", s.r#type))
                 .unwrap_or("not found".to_owned())
                 .to_owned(),
             faction_restriction: format_restriction(&u.restrictions, Restriction::Factions),

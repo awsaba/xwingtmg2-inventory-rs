@@ -43,7 +43,7 @@
         "xws": "coreasteroid5"
       }
     ],
-    "sku": "swx"
+    "sku": "swx01"
   },
   {
     "name": "First Edition Force Awakens Core Set",
@@ -115,7 +115,7 @@
         "xws": "vt49decimatordebris2"
       }
     ],
-    "sku": "swz"
+    "sku": "swx"
   },
   {
     "name": "First Edition YT-2400 Freighter Expansion Pack",
@@ -141,7 +141,7 @@
         "xws": "yt2400debris2"
       }
     ],
-    "sku": "swz"
+    "sku": "swx"
   },
   {
     "name": "Second Edition Core Set",
@@ -392,7 +392,7 @@
         "xws": "shieldupgrade"
       }
     ],
-    "sku": "swz"
+    "sku": "swz01"
   },
   {
     "name": "Saw's Renegades Expansion Pack",
@@ -498,7 +498,7 @@
         "xws": "protontorpedoes"
       }
     ],
-    "sku": "swz"
+    "sku": "swx74"
   },
   {
     "name": "TIE Reaper Expansion Pack",
@@ -559,7 +559,7 @@
         "xws": "juke"
       }
     ],
-    "sku": "swz"
+    "sku": "swx75"
   },
   {
     "name": "Rebel Alliance Conversion Kit",
@@ -1385,7 +1385,7 @@
         "xws": "tacticalscrambler"
       }
     ],
-    "sku": "swz"
+    "sku": "swz06"
   },
   {
     "name": "Galactic Empire Conversion Kit",
@@ -2071,7 +2071,7 @@
         "xws": "tacticalscrambler"
       }
     ],
-    "sku": "swz"
+    "sku": "swz07"
   },
   {
     "name": "Scum and Villainy Conversion Kit",
@@ -2932,7 +2932,7 @@
         "xws": "r5tk"
       }
     ],
-    "sku": "swz"
+    "sku": "swz08"
   },
   {
     "name": "T-65 X-Wing Expansion Pack",
@@ -2998,7 +2998,7 @@
         "xws": "servomotorsfoils"
       }
     ],
-    "sku": "swz"
+    "sku": "swz12"
   },
   {
     "name": "BTL-A4 Y-Wing Expansion Pack",
@@ -3069,7 +3069,7 @@
         "xws": "veteranturretgunner"
       }
     ],
-    "sku": "swz"
+    "sku": "swz13"
   },
   {
     "name": "TIE/ln Fighter Expansion Pack",
@@ -3150,7 +3150,7 @@
         "xws": "stealthdevice"
       }
     ],
-    "sku": "swz"
+    "sku": "swz14"
   },
   {
     "name": "TIE Advanced x1 Expansion Pack",
@@ -3221,7 +3221,7 @@
         "xws": "firecontrolsystem"
       }
     ],
-    "sku": "swz"
+    "sku": "swz15"
   },
   {
     "name": "Slave I Expansion Pack",
@@ -3383,7 +3383,7 @@
         "xws": "iontorpedoes"
       }
     ],
-    "sku": "swz"
+    "sku": "swz17"
   },
   {
     "name": "Lando's Millennium Falcon Expansion Pack",
@@ -3504,7 +3504,7 @@
         "xws": "tacticalscrambler"
       }
     ],
-    "sku": "swz"
+    "sku": "swz04"
   },
   {
     "name": "Resistance Conversion Kit",
@@ -4714,7 +4714,7 @@
         "xws": "tacticalscrambler"
       }
     ],
-    "sku": "swz"
+    "sku": "swz18"
   },
   {
     "name": "TIE/FO Fighter Expansion Pack",
@@ -5676,7 +5676,7 @@
         "xws": "battlemeditation"
       }
     ],
-    "sku": "swz"
+    "sku": "swz34"
   },
   {
     "name": "Z-95-AF4 Headhunter Expansion Pack",
@@ -5793,7 +5793,7 @@
         "xws": "intimidation"
       }
     ],
-    "sku": "swz"
+    "sku": "swz38"
   },
   {
     "name": "Naboo Royal N-1 Starfighter Expansion Pack",
@@ -5874,7 +5874,7 @@
         "xws": "r4astromech"
       }
     ],
-    "sku": "swz"
+    "sku": "swz40"
   },
   {
     "name": "Hyena-Class Droid Bomber Expansion Pack",
@@ -5965,7 +5965,7 @@
         "xws": "landingstruts"
       }
     ],
-    "sku": "swz"
+    "sku": "swz41"
   },
   {
     "name": "A/SF-01 B-Wing Expansion Pack",
@@ -6360,7 +6360,7 @@
         "xws": "patternanalyzer"
       }
     ],
-    "sku": "swz"
+    "sku": "swz44"
   },
   {
     "name": "Resistance Transport Expansion Pack",
@@ -6496,7 +6496,7 @@
         "xws": "sparepartscanisters"
       }
     ],
-    "sku": "swz"
+    "sku": "swz45"
   },
   {
     "name": "BTL-B Y-Wing Expansion Pack",
@@ -6835,7 +6835,7 @@
         "xws": "intimidation"
       }
     ],
-    "sku": "swz"
+    "sku": "swz52"
   },
   {
     "name": "Ghost Expansion Pack",
@@ -6971,7 +6971,7 @@
         "xws": "dorsalturret"
       }
     ],
-    "sku": "swz"
+    "sku": "swz49"
   },
   {
     "name": "Inquisitors' TIE Expansion Pack",
@@ -7027,7 +7027,7 @@
         "xws": "afterburners"
       }
     ],
-    "sku": "swz"
+    "sku": "swz50"
   },
   {
     "name": "Huge Ship Conversion Kit",
@@ -7539,7 +7539,7 @@
         "xws": "thunderstrike"
       }
     ],
-    "sku": "swz"
+    "sku": "swz55"
   },
   {
     "name": "C-ROC Cruiser Expansion Pack",
@@ -7710,7 +7710,7 @@
         "xws": "corsairrefit"
       }
     ],
-    "sku": "swz"
+    "sku": "swz56"
   },
   {
     "name": "Epic Battles Multiplayer Expansion",
@@ -7736,7 +7736,7 @@
         "xws": "veteranwingleader"
       }
     ],
-    "sku": "swz"
+    "sku": "swz57"
   },
   {
     "name": "Major Vonreg's TIE Expansion Pack",
@@ -7797,7 +7797,7 @@
         "xws": "deuteriumpowercells"
       }
     ],
-    "sku": "swz"
+    "sku": "swz62"
   },
   {
     "name": "Fireball Expansion Pack",
@@ -7975,7 +7975,7 @@
         "xws": "elusive"
       }
     ],
-    "sku": "swz"
+    "sku": "swz60"
   },
   {
     "name": "TIE/in Interceptor Expansion Pack",
@@ -8031,7 +8031,7 @@
         "xws": "predator"
       }
     ],
-    "sku": "swz"
+    "sku": "swz59"
   },
   {
     "name": "Hound's Tooth Expansion Pack",
@@ -8147,7 +8147,7 @@
         "xws": "houndstooth"
       }
     ],
-    "sku": "swz"
+    "sku": "swz58"
   },
   {
     "name": "Xi-class Light Shuttle Expansion Pack",
@@ -8238,7 +8238,7 @@
         "xws": "sensorbuoysuite"
       }
     ],
-    "sku": "swz"
+    "sku": "swz69"
   },
   {
     "name": "LAAT/i Gunship Expansion Pack",
@@ -8415,7 +8415,7 @@
         "xws": "kalani"
       }
     ],
-    "sku": "swz"
+    "sku": "swz71"
   },
   {
     "name": "Heralds of Hope Expansion Pack",
@@ -8905,7 +8905,7 @@
         "xws": "margsablclosure"
       }
     ],
-    "sku": "swz"
+    "sku": "swz81"
   },
   {
     "name": "Nimbus-class V-Wing Expansion Pack",
@@ -9182,7 +9182,7 @@
         "xws": "vectoredcannonsrz1"
       }
     ],
-    "sku": "swz"
+    "sku": "swz83"
   },
   {
     "name": "Skystrike Academy Squadron Pack",
@@ -9373,7 +9373,7 @@
         "xws": "tiedefenderelite"
       }
     ],
-    "sku": "swz"
+    "sku": "swz84"
   },
   {
     "name": "Fugitives and Collaborators Squadron Pack",
@@ -9579,7 +9579,7 @@
         "xws": "engineupgrade"
       }
     ],
-    "sku": "swz"
+    "sku": "swz85"
   },
   {
     "name": "Fury of the First Order",
@@ -10596,7 +10596,7 @@
         "xws": "shatteringshot"
       }
     ],
-    "sku": "swz"
+    "sku": "swz91"
   },
   {
     "name": "Rogue-class Starfighter Expansion pack",
@@ -10712,7 +10712,7 @@
         "xws": "xanadublood"
       }
     ],
-    "sku": "swz"
+    "sku": "swz92"
   },
   {
     "name": "Clone Z-95 Headhunter Expansion pack",
@@ -10823,7 +10823,7 @@
         "xws": "xx23sthreadtracers"
       }
     ],
-    "sku": "swz"
+    "sku": "swz89"
   },
   {
     "name": "Pride of Mandalore Reinforcements Pack",
@@ -11185,7 +11185,7 @@
         "xws": "hotshottailblaster"
       }
     ],
-    "sku": "swz"
+    "sku": "swz90"
   },
   {
     "name": "Battle of Yavin Battle Pack",
