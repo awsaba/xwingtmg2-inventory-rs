@@ -1,20 +1,89 @@
 // This module is not a complete implementation of xwing-data2, just what
 // is necessary for some basic collection management.
 
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::hash::{Hash, Hasher};
 use std::io::Error;
 use std::path::Path;
 
-pub trait Xws {
-    /// Returns the xws id of the item.
-    fn xws(&self) -> &str;
+#[derive(Deserialize, Serialize, PartialOrd, Eq, PartialEq, Hash, Copy, Clone, Debug)]
+pub enum SlotKind {
+    Astromech,
+    Cannon,
+    Cargo,
+    Command,
+    Configuration,
+    Crew,
+    Device,
+    #[serde(alias = "Force Power")]
+    ForcePower,
+    Gunner,
+    Hardpoint,
+    Hyperdrive,
+    Illicit,
+    Missile,
+    Modification,
+    Sensor,
+    #[serde(alias = "Tactical Relay")]
+    TacticalRelay,
+    Talent,
+    Team,
+    Tech,
+    Title,
+    Torpedo,
+    Turret,
 }
 
-impl Hash for dyn Xws {
+#[derive(Deserialize, Serialize, PartialOrd, Eq, PartialEq, Hash, Copy, Clone, Debug)]
+pub enum XwsKind {
+    #[serde(alias = "ship")]
+    Ship,
+    #[serde(alias = "obstacle")]
+    Obstacle,
+    #[serde(alias = "pilot")]
+    Pilot,
+    //TODO: Using the "type" of the main side for now, but should be expanded
+    // to account for the multiple slot cards
+    #[serde(alias = "upgrade")]
+    Upgrade(SlotKind),
+    #[serde(alias = "damage")]
+    Damage,
+}
+
+/// `XwsId` are the "unique" combination of the item types (roughly the
+/// top-level kinds of things). In practices, all the upgrade and pilot cards
+/// should be unique, but
+pub trait XwsId {
+    /// Returns the xws id of the item.
+    fn xws(&self) -> &str;
+
+    /// Returns the kind of the item
+    fn kind(&self) -> XwsKind;
+}
+
+impl Hash for dyn XwsId {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.xws().hash(state);
+        self.kind().hash(state);
+    }
+}
+
+impl PartialOrd for dyn XwsId {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        match (
+            self.xws().partial_cmp(other.xws()),
+            self.kind().partial_cmp(&other.kind()),
+        ) {
+            (Some(o1), Some(o2)) => Some(o1.then(o2)),
+            _ => None,
+        }
+    }
+}
+
+impl PartialEq for dyn XwsId {
+    fn eq(&self, other: &Self) -> bool {
+        self.xws() == other.xws() && self.kind() == other.kind()
     }
 }
 
@@ -22,19 +91,22 @@ impl Hash for dyn Xws {
 /// mostly epic only cards.
 #[allow(dead_code)]
 pub fn known_missing(xws: &str) -> bool {
-    matches!(xws, "sabinewren-swz93")
+    matches!(xws, "sabinewren-swz93") // this is the epic commmand/crew card
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Deserialize, Clone, Debug)]
 pub struct Pilot {
     pub name: String,
     pub xws: String,
     pub initiative: u32,
 }
 
-impl Xws for Pilot {
+impl XwsId for Pilot {
     fn xws(&self) -> &str {
         &self.xws
+    }
+    fn kind(&self) -> XwsKind {
+        XwsKind::Pilot
     }
 }
 
@@ -46,15 +118,18 @@ pub struct Ship {
     pub pilots: Vec<Pilot>,
 }
 
-impl Xws for Ship {
+impl XwsId for Ship {
     fn xws(&self) -> &str {
         &self.xws
+    }
+    fn kind(&self) -> XwsKind {
+        XwsKind::Ship
     }
 }
 
 #[derive(Deserialize, Debug)]
 pub struct Side {
-    pub r#type: String,
+    pub r#type: SlotKind,
 }
 
 pub enum Restriction {
@@ -68,13 +143,13 @@ pub enum Restriction {
     //Action,
 }
 
-#[derive(Deserialize, Debug)]
+#[derive(Hash, Eq, PartialEq, Deserialize, Debug)]
 pub struct ActionDifficulty {
     pub r#type: String,
     pub difficulty: Option<String>,
 }
 
-#[derive(Deserialize, Default, Debug)]
+#[derive(Hash, PartialEq, Eq, Deserialize, Default, Debug)]
 pub struct Restrictions {
     #[serde(default)]
     pub factions: Vec<String>,
@@ -104,9 +179,12 @@ pub struct Upgrade {
     pub restrictions: Vec<Restrictions>,
 }
 
-impl Xws for Upgrade {
+impl XwsId for Upgrade {
     fn xws(&self) -> &str {
         &self.xws
+    }
+    fn kind(&self) -> XwsKind {
+        XwsKind::Upgrade(self.sides[0].r#type)
     }
 }
 

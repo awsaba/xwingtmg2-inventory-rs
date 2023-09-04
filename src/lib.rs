@@ -1,10 +1,51 @@
-use serde::Serialize;
-
+//! A generic xws-based collection is:
+//!
+//! - A list of expansions and their counts, indexed by SKU
+//! - A list of additional components by their xws IDs.
+//!
+//! An Inventory is the complete (as implemented) xws data for each kind with
+//! its count.
+use crate::expansions::Item;
+use crate::xwingdata2::Restriction;
 pub mod expansions;
 pub mod xwingdata2;
 pub mod yasb2;
 
-use xwingdata2::Restriction;
+use serde::{Deserialize, Serialize};
+
+use std::collections::BTreeMap;
+
+#[derive(Default, Serialize, Deserialize)]
+pub struct Collection {
+    pub skus: BTreeMap<String, u32>,
+    pub singles: BTreeMap<Item, u32>,
+}
+
+impl Collection {
+    pub fn inventory(
+        &self,
+        expansions: expansions::Expansions,
+    ) -> (BTreeMap<Item, u32>, Vec<String>) {
+        let mut inventory = self.singles.clone();
+        let mut missing_expansions = vec![];
+
+        'sku_search: for (sku, c) in &self.skus {
+            for expansion in &expansions {
+                if &expansion.sku == sku {
+                    for item_count in &expansion.contents {
+                        let total =
+                            inventory.get(&item_count.item).unwrap_or(&0) + c * item_count.count;
+                        inventory.insert(item_count.item.clone(), total);
+                    }
+                    continue 'sku_search;
+                }
+            }
+
+            missing_expansions.push(sku.to_owned());
+        }
+        (inventory, missing_expansions)
+    }
+}
 
 /// This is the full ship as defined by the expansions.
 ///
@@ -69,7 +110,7 @@ impl UpgradeRecord {
             r#type: u
                 .sides
                 .first()
-                .map(|s| s.r#type.to_owned())
+                .map(|s| format!("{:?}", s.r#type)) //FIXME
                 .unwrap_or("not found".to_owned())
                 .to_owned(),
             faction_restriction: format_restriction(&u.restrictions, Restriction::Factions),

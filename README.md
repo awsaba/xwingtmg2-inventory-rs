@@ -65,6 +65,7 @@ Log in to <https://yasb.app>, access your collection at <https://yasb.app/collec
 ```shell
 jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' pilots.json > pilots.csv
 jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' upgrades.json > upgrades.csv
+jq -r '(map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' ships.json > ships.csv
 ```
 
 ## Contributing to the this repo

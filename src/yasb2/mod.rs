@@ -1,12 +1,13 @@
 use serde::Deserialize;
 use serde::Serialize;
+use std::collections::BTreeMap;
 use std::collections::HashMap;
 use std::fs;
 use std::io;
 use std::path::Path;
 
 use crate::expansions;
-use crate::expansions::{Item, ItemCount, ItemType};
+use crate::expansions::{Item, ItemType};
 
 /// Ships are probably this most common.
 #[derive(Deserialize, Serialize, Debug)]
@@ -54,10 +55,19 @@ pub fn to_canonical(name: &str) -> String {
 /// It would be necessary to either import the full card list from YASB's source,
 /// which includes the xws id, but this seems like the least bad way to do this
 /// with the idea of supporting more collection sources.
-pub(crate) fn to_xws(name: &str, typ: expansions::ItemType) -> String {
-    let xws = to_canonical(name);
+fn to_xws(name: &str, typ: expansions::ItemType) -> String {
+    let mut canonical = to_canonical(name);
+    // these particular bad capitilazation is problematic because it conflicts
+    // the correct one, which does correctly cannonicalize to xws.
+    match name {
+        "TIE/FO Fighter" | "E-Wing" | "T-70 X-Wing" | "TIE/SF Fighter" => {
+            canonical.push_str("-legacyyasb");
+            return canonical;
+        }
+        _ => (),
+    }
     match typ {
-        ItemType::Pilot => match xws.as_str() {
+        ItemType::Pilot => match canonical.as_str() {
             "adigallia-delta7b" => "adigallia-delta7baethersprite",
             "ahsokatano-awing" => "ahsokatano-rz1awing",
             "blacksquadronace-t70" => "blacksquadronace-t70xwing",
@@ -89,7 +99,7 @@ pub(crate) fn to_xws(name: &str, typ: expansions::ItemType) -> String {
             "zeborrelios-tiefighter" => "zeborrelios-tielnfighter",
             x => x,
         },
-        ItemType::Upgrade => match xws.as_str() {
+        ItemType::Upgrade => match canonical.as_str() {
             "b6bladewingprototype-epic" => "b6bladewingprototype-command",
             "c3po-resistance" => "c3po-crew",
             "chewbacca-resistance" => "chewbacca-crew",
@@ -99,68 +109,78 @@ pub(crate) fn to_xws(name: &str, typ: expansions::ItemType) -> String {
             "vectoredcannons-rz1" => "vectoredcannonsrz1",
             x => x,
         },
-        ItemType::Ship => match xws.as_str() {
+        ItemType::Ship => match canonical.as_str() {
             /* in case anyone asks: these are 1.0 ships that have been
-               renamed over time in yasb, but the old records are not
-               cleared with "Reset my Collection" */
-            /* "arc170" => "arc170starfighter",
-            "awing" => "rz1awing",
-            "bsf17bomber" => "mg100starfortress",
-            "bwing" => "asf01bwing",
-            "firespray31" => "firesprayclasspatrolcraft",
-            "gozanticlasscruiser" => "gozanticlasscruiser",
-            "hwk290" => "hwk290lightfreighter",
-            "kwing" => "btls8kwing",
-            "lambdaclassshuttle" => "lambdaclasst4ashuttle",
-            "mg100starfortress" => "mg100starfortress",
-            "quadjumper" => "quadrijettransferspacetug",
-            "starviper" => "starviperclassattackplatform",
-            "tieadvanced" => "tieadvancedx1",
-            "tieadvancedprototype" => "tieadvancedv1",
-            "tieaggressor" => "tieagaggressor",
-            "tiebomber" => "tiesabomber",
-            "tiedefender" => "tieddefender",
-            "tiefighter" => "tielnfighter",
-            "tieinterceptor" => "tieininterceptor",
-            "tiesilencer" => "tievnsilencer",
-            "tiestriker" => "tieskstriker",
-            "upsilonclasscommandshuttle" => "upsilonclassshuttle",
-            "uwing" => "ut60duwing",
-            "vcx100" => "vcx100lightfreighter",
-            "xwing" => "t65xwing",
-            "yt1300-resistance" => "scavengedyt1300",
-            "yt1300" => "modifiedyt1300lightfreighter",
-            "yt2400" => "yt2400lightfreighter",
-            "ywing" => "btla4ywing",
-            "z95headhunter" => "z95af4headhunter",
-            */
-            _ => xws.as_str(),
+            renamed over time in yasb, but the old records are not
+            cleared with "Reset my Collection" */
+            "arc170"
+            | "awing"
+            | "bsf17bomber"
+            | "bwing"
+            | "firespray31"
+            | "hwk290"
+            | "kwing"
+            | "lambdaclassshuttle"
+            | "quadjumper"
+            | "starviper"
+            | "tieadvanced"
+            | "tieadvancedprototype"
+            | "tieaggressor"
+            | "tiebomber"
+            | "tiedefender"
+            | "tiefighter"
+            | "tieinterceptor"
+            | "tiesilencer"
+            | "tiestriker"
+            | "upsilonclasscommandshuttle"
+            | "uwing"
+            | "vcx100"
+            | "xwing"
+            | "yt1300-resistance"
+            | "yt1300"
+            | "yt2400"
+            | "ywing"
+            | "z95headhunter" => {
+                canonical.push_str("-legacyyasb");
+                canonical.as_str()
+            }
+            _ => canonical.as_str(),
         },
-        _ => xws.as_str(),
+        _ => canonical.as_str(),
     }
     .to_string()
 }
 
-/// Flat list of item counts and not found things in a collection.
-/// TODO: Move to a more generic module that can be referenced by multiple
-/// collection sources.
-pub struct XwsCollection {
-    pub item_counts: Vec<ItemCount>,
-    pub missing_singles: Vec<Item>,
-    pub missing_expansions: Vec<String>,
-}
-
 impl Collection {
-    /// Returns base counts
-    ///
-    /// Assumes that the `expansiions` contains all valid items that exist in
-    /// xwing-data2 when determining what is missing.
-    pub fn to_xws_collection(&self, expansions: &expansions::Expansions) -> XwsCollection {
-        let mut item_counts: HashMap<Item, u32> = HashMap::new();
-        let mut missing_singles: Vec<Item> = vec![];
-        let mut missing_expansions: Vec<String> = vec![];
+    pub fn expansion_skus(
+        &self,
+        expansions: &expansions::Expansions,
+    ) -> (BTreeMap<String, u32>, Vec<String>) {
+        let mut skus = BTreeMap::new();
+        let mut missing = vec![];
 
-        // TODO: This is some terrible, non-idiomatic rust
+        'exp_search: for (e, c) in &self.expansions {
+            let n: u32 = c.parse().unwrap(); // FIXME:
+            if n == 0 {
+                continue;
+            }
+            for expansion in expansions {
+                if &expansion.name == e {
+                    skus.insert(expansion.sku.to_owned(), n);
+                    continue 'exp_search;
+                }
+            }
+            missing.push(e.to_owned())
+        }
+
+        (skus, missing)
+    }
+
+    /// Does not do any checking of correctness/missing items, just tries
+    /// to use the hard-coded YASB-to-xws lookup/rules for the singles.
+    pub fn singles_as_xws(&self) -> BTreeMap<Item, u32> {
+        let mut item_counts = BTreeMap::new();
+
         if let Collection {
             singletons: Some(ref singles),
             ..
@@ -173,13 +193,9 @@ impl Collection {
                 }
                 let item = Item {
                     r#type: ItemType::Upgrade,
-                    xws: to_xws(&name, ItemType::Upgrade),
+                    xws: to_xws(name, ItemType::Upgrade),
                 };
-                if !expansions::has_item(expansions, &item) {
-                    missing_singles.push(item);
-                    continue;
-                }
-                if let Some(_) = item_counts.get(&item) {
+                if item_counts.get(&item).is_some() {
                     println!("YASB: ignoring duplicate item: {}", name);
                     continue;
                 }
@@ -194,11 +210,7 @@ impl Collection {
                     r#type: ItemType::Pilot,
                     xws: to_xws(name, ItemType::Pilot),
                 };
-                if !expansions::has_item(expansions, &item) {
-                    missing_singles.push(item);
-                    continue;
-                }
-                if let Some(_) = item_counts.get(&item) {
+                if item_counts.get(&item).is_some() {
                     println!("YASB: ignoring duplicate item: {}", name);
                     continue;
                 }
@@ -213,54 +225,13 @@ impl Collection {
                     r#type: ItemType::Ship,
                     xws: to_xws(name, ItemType::Ship),
                 };
-                if !expansions::has_item(expansions, &item) {
-                    missing_singles.push(item);
-                    continue;
-                }
-                if let Some(_) = item_counts.get(&item) {
+                if item_counts.get(&item).is_some() {
                     println!("YASB: ignoring duplicate item: {}", name);
                     continue;
                 }
                 item_counts.insert(item, n);
             }
         }
-
-        for (e, c) in &self.expansions {
-            let n: u32 = c.parse().unwrap(); // FIXME:
-            if n == 0 {
-                continue;
-            }
-
-            for expansion in expansions {
-                if expansion.edition() != 2 {
-                    continue;
-                }
-                if &expansion.name == e {
-                    for item_count in &expansion.contents {
-                        let total =
-                            item_counts.get(&item_count.item).unwrap_or(&0) + n * item_count.count;
-                        item_counts.insert(item_count.item.clone(), total);
-                    }
-                    continue;
-                }
-            }
-
-            missing_expansions.push(e.to_owned());
-        }
-
-        XwsCollection {
-            item_counts: item_counts
-                .iter()
-                .map(|(k, v)| ItemCount {
-                    item: Item {
-                        r#type: k.r#type,
-                        xws: k.xws.clone(),
-                    },
-                    count: *v,
-                })
-                .collect(),
-            missing_expansions,
-            missing_singles,
-        }
+        item_counts
     }
 }
