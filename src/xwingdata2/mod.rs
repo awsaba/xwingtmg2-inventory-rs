@@ -1,5 +1,13 @@
-// This module is not a complete implementation of xwing-data2, just what
-// is necessary for some basic collection management.
+//! This module is not a complete implementation of xwing-data2, just what
+//! is necessary for some basic collection management.
+//!
+//! ```rust
+//! let data = Data::load_from_manifest("path_to/xwing-data2")?;
+//! match data.get_pilot("zeborrelios") {
+//!    Some((ship, pilot)) => println!("{}: {} - {}", ship.name, pilot.name, pilot.initiative),
+//!    None => println!("not found"),
+//! };
+//! ```
 
 use serde::{Deserialize, Serialize};
 use std::fs;
@@ -188,7 +196,7 @@ impl XwsId for Upgrade {
     }
 }
 
-// TODO: The goal is have them all in one list, and let a spreadsheet
+/// Top-level model of loaded xwing-data2 data.
 #[derive(Deserialize, Debug)]
 pub struct Data {
     pub ships: Vec<Ship>,
@@ -197,6 +205,46 @@ pub struct Data {
 }
 
 impl Data {
+    /// Loads from a xwing-data2/ data source.
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if any of the paths are invalid
+    /// or can't be parsed.
+    pub fn load_from_manifest(path: &Path) -> Result<Self, Error> {
+        // read the whole manifest
+        let manifest_path = path.join("data/manifest.json");
+        let buffer = fs::read_to_string(manifest_path)?;
+
+        let manifest: Manifest = serde_json::from_str(&buffer)?;
+
+        let mut data = Data {
+            ships: vec![],
+            upgrades: vec![],
+        };
+
+        for upgrade_path in &manifest.upgrades {
+            //println!("loading: {}", &upgrade_path);
+            let path = path.join(upgrade_path);
+            let buffer = fs::read_to_string(path)?;
+            // TODO: the individual fils are pretty straightforward, so choosing
+            // not to create a struct here yet
+            let mut upgrades: Vec<Upgrade> = serde_json::from_str(&buffer)?;
+            data.upgrades.append(&mut upgrades);
+        }
+
+        for faction in &manifest.pilots {
+            for pilot_path in &faction.ships {
+                let path = path.join(pilot_path);
+                let buffer = fs::read_to_string(path)?;
+                let ship: Ship = serde_json::from_str(&buffer)?;
+                data.ships.push(ship);
+            }
+        }
+
+        Ok(data)
+    }
+
     pub fn get_pilot(&self, xws: &str) -> Option<(&Ship, &Pilot)> {
         for s in &self.ships {
             for p in &s.pilots {
@@ -226,44 +274,4 @@ struct ShipFaction {
 struct Manifest {
     pilots: Vec<ShipFaction>,
     upgrades: Vec<String>,
-}
-
-/// Loads from a xwing-data2/ data source.
-///
-/// # Errors
-///
-/// This function will return an error if any of the paths are invalid
-/// or can't be parsed.
-pub fn load_from_manifest(path: &Path) -> Result<Data, Error> {
-    // read the whole manifest
-    let manifest_path = path.join("data/manifest.json");
-    let buffer = fs::read_to_string(manifest_path)?;
-
-    let manifest: Manifest = serde_json::from_str(&buffer)?;
-
-    let mut data = Data {
-        ships: vec![],
-        upgrades: vec![],
-    };
-
-    for upgrade_path in &manifest.upgrades {
-        //println!("loading: {}", &upgrade_path);
-        let path = path.join(upgrade_path);
-        let buffer = fs::read_to_string(path)?;
-        // TODO: the individual fils are pretty straightforward, so choosing
-        // not to create a struct here yet
-        let mut upgrades: Vec<Upgrade> = serde_json::from_str(&buffer)?;
-        data.upgrades.append(&mut upgrades);
-    }
-
-    for faction in &manifest.pilots {
-        for pilot_path in &faction.ships {
-            let path = path.join(pilot_path);
-            let buffer = fs::read_to_string(path)?;
-            let ship: Ship = serde_json::from_str(&buffer)?;
-            data.ships.push(ship);
-        }
-    }
-
-    Ok(data)
 }
