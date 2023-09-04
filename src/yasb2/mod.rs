@@ -1,3 +1,14 @@
+//! Support for yasb.app collections.
+//!
+//! YASBs `collection`s use basically their full display name for expansions and
+//! cards, only translating to XWS for export. For collections that have been
+//! around a while, there are legacy entries that may not be cleared by the
+//! current "Reset Collection" functionality.
+//!
+//! This module does it's best to match YASB's reported collection contents.
+//!
+//! Note: YASB uses strings for the counts, so that is why it is used as value
+//! types for the various maps.
 use serde::Deserialize;
 use serde::Serialize;
 use std::collections::BTreeMap;
@@ -9,7 +20,7 @@ use std::path::Path;
 use crate::expansions;
 use crate::expansions::{Item, ItemType};
 
-/// Ships are probably this most common.
+/// Additional single items in a YASB colletion.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Singletons {
     pub ship: Option<HashMap<String, String>>,
@@ -17,28 +28,34 @@ pub struct Singletons {
     pub pilot: Option<HashMap<String, String>>,
 }
 
+/// A YASB collection.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct Collection {
+    /// A map of expansion names to counts.
     pub expansions: HashMap<String, String>,
     pub singletons: Option<Singletons>,
 }
 
-/// Intermediate Collection file because yasb returns the counts as strings?
+/// A Collection file is an object with a single field: `collection`.
 #[derive(Deserialize, Serialize, Debug)]
 pub struct CollectionFile {
     pub collection: Collection,
 }
 
-/// Load a raw YASB collection obtained from https://yash.app/collection.
-/// Intermediate step that does not turn the strings for the counts back
-/// into numbers.
-pub fn load_collection_file(path: &Path) -> Result<Collection, io::Error> {
-    let buffer = fs::read_to_string(path)?;
+impl Collection {
+    /// Load a raw YASB collection obtained from <https://login.yash.app/collection>.
+    /// Intermediate step that does not turn the strings for the counts back
+    /// into numbers.
+    pub fn load(path: &Path) -> Result<Self, io::Error> {
+        let buffer = fs::read_to_string(path)?;
 
-    let f: CollectionFile = serde_json::from_str(&buffer)?;
-    Ok(f.collection)
+        let f: CollectionFile = serde_json::from_str(&buffer)?;
+        Ok(f.collection)
+    }
 }
 
+/// A real basic function that can turn some YASB names into xws ids, or at
+/// least enough to disambiguate.
 pub fn to_canonical(name: &str) -> String {
     name.chars()
         .filter(|c| c.is_alphanumeric() || c == &'(')
@@ -152,9 +169,11 @@ fn to_xws(name: &str, typ: expansions::ItemType) -> String {
 }
 
 impl Collection {
+    /// Attempts to turn YASB collection expansion names into their proper SKUs.
+    /// Returns a list of any expansion names that couldn't be found.
     pub fn expansion_skus(
         &self,
-        expansions: &expansions::Expansions,
+        catalog: &expansions::Catalog,
     ) -> (BTreeMap<String, u32>, Vec<String>) {
         let mut skus = BTreeMap::new();
         let mut missing = vec![];
@@ -164,9 +183,9 @@ impl Collection {
             if n == 0 {
                 continue;
             }
-            for expansion in expansions {
+            for (sku, expansion) in &catalog.expansions {
                 if &expansion.name == e {
-                    skus.insert(expansion.sku.to_owned(), n);
+                    skus.insert(sku.to_owned(), n);
                     continue 'exp_search;
                 }
             }

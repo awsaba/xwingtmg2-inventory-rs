@@ -2,10 +2,8 @@
 /target
 
 collection.json
-pilots.json
 pilots.csv
-upgrades.json
 upgrades.csv
-ships.json
 ships.csv
+inventory.json
 *.xlsx
