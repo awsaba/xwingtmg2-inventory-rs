@@ -2,7 +2,10 @@
 //! is necessary for some basic collection management.
 //!
 //! ```rust
-//! let data = Data::load_from_manifest("path_to/xwing-data2")?;
+//! use std::path::Path;
+//! use xwingtmg2_inventory_rs::xwingdata2::Data;
+//!
+//! let data = Data::load_from_manifest(Path::new("./xwing-data2")).unwrap();
 //! match data.get_pilot("zeborrelios") {
 //!    Some((ship, pilot)) => println!("{}: {} - {}", ship.name, pilot.name, pilot.initiative),
 //!    None => println!("not found"),

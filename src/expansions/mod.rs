@@ -39,7 +39,9 @@
 //!```
 //!
 //!```rust
-//!let catalog = Catalog::load("path/to/expansions.json")?;
+//!use xwingtmg2_inventory_rs::expansions::Catalog;
+//!
+//!let catalog = Catalog::load().unwrap();
 //!let core = catalog.expansions.get("swz01").unwrap();
 //!```
 //!
