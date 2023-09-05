@@ -1,17 +1,16 @@
 # yasb collection to inventory dumper
 
-This is tool that will take your raw [yasb collection](https://yasb.app/collection)
+This is tool that will take your raw [yasb collection](https://login.yasb.app/collection)
 and dump it as comma separated value (CSV) files that can then be processed
 in your favorite spreadsheet program.
 
 ## Using this tool with a YASB collection
 
-1. You will need a working rust toolchain.
-1. Clone this repo and it's submodules: `git submodule init`
-   1. Note: You may need to update to a more current version of [`xwing-data2`]
-1. Log in to <https://yasb.app>, access your collection at <https://yasb.app/collection>, and save the `json` to `collection.json`.
-1. Run the tool with `cargo run`. This will product 2 `json` files, one for pilots
-   and one for upgrades.
+1. You will need a working `rust` toolchain. Refer to the installation and usage instructions for your platform.
+1. Clone this repo and its submodules: `git submodule init`.
+1. Log in to <https://yasb.app>, access your raw collection at <https://login.yasb.app/collection>, and save the `json` to `collection.json`.
+1. Run the tool with `cargo run`. This will produce an `inventory.json`, which will contain
+   `ships`, `pilots`, and `upgrades` lists.
 1. Use something like `jq` to turn it into CSV [(from StackOverflow)](https://stackoverflow.com/questions/32960857/how-to-convert-arbitrary-simple-json-to-csv-using-jq):
 
 ```shell
@@ -23,10 +22,12 @@ jq -r '.ships | (map(keys) | add | unique) as $cols | map(. as $row | $cols | ma
 
 ## Why does this exist
 
-1. I have over 800 pilot and upgrade cards that don't fit in a single organizer
+1. My collection is far from complete, but I still have over 1100+ pilot and
+   upgrade cards that don't fit in a single organizer
    or box, so I need a way to more accurately count by type and restrictions to
    help me organize.
-1. How do I get X if I don't have it?
+1. How do I get X if I don't have it? What am I actually missing out
+   on if I don't pick up an expansion?
 1. List building tools are focused on the list building, so inventory management
    is a much lower priority for them.
 1. I also couldn't find anyone keeping an updated Excel template or anything else
@@ -52,7 +53,7 @@ Why rust?
   updated.
 * YASB uses names and not unique IDs in their collections and those change over
   time. YASB is pretty popular, so the goal will be to update to support
- importing from a YASB collection dump.
+  importing from a YASB collection dump.
 * Windows and character encodings. *Run the following nonsense in your PowerShell
   session before trying any of this*:
 
@@ -70,7 +71,7 @@ some tests for anything you are going to add.
 ### Adding new expansions
 
 1. Add expansion.
-1. ...
+1. TODO
 1. Check if any ships can be removed from the `swzunreleased` placeholder.
 
 ## Initial `expansions.json`
