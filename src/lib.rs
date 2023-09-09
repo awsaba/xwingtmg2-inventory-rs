@@ -238,11 +238,11 @@ fn format_sources(expansions: &expansions::Catalog, sources: &Vec<ItemCount>) ->
     let mut strs = vec![];
 
     for s in sources {
-        let name = expansions
+        let (name, wave) = expansions
             .expansions
             .get(&s.item.xws)
-            .map_or("unknown", |e| &e.name);
-        strs.push(format!("{}:{}:{}", name, s.item.xws, s.count));
+            .map_or(("unknown", 99), |e| (&e.name, e.wave));
+        strs.push(format!("{}:{}:wave{}:{}", name, s.item.xws, wave, s.count));
     }
 
     strs.join(",")

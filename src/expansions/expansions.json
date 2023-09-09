@@ -43,7 +43,8 @@
       }
     ],
     "name": "First Edition Core Set",
-    "sku": "swx01"
+    "sku": "swx01",
+    "wave": 0
   },
   {
     "contents": [
@@ -69,7 +70,8 @@
       }
     ],
     "name": "First Edition YT-2400 Freighter Expansion Pack",
-    "sku": "swx23"
+    "sku": "swx23",
+    "wave": 0
   },
   {
     "contents": [
@@ -95,7 +97,8 @@
       }
     ],
     "name": "First Edition VT-49 Decimator Expansion Pack",
-    "sku": "swx24"
+    "sku": "swx24",
+    "wave": 0
   },
   {
     "contents": [
@@ -141,7 +144,8 @@
       }
     ],
     "name": "First Edition Force Awakens Core Set",
-    "sku": "swx36"
+    "sku": "swx36",
+    "wave": 0
   },
   {
     "contents": [
@@ -247,7 +251,8 @@
       }
     ],
     "name": "Saw's Renegades Expansion Pack",
-    "sku": "swx74"
+    "sku": "swx74",
+    "wave": 0
   },
   {
     "contents": [
@@ -308,7 +313,8 @@
       }
     ],
     "name": "TIE Reaper Expansion Pack",
-    "sku": "swx75"
+    "sku": "swx75",
+    "wave": 0
   },
   {
     "contents": [
@@ -559,7 +565,8 @@
       }
     ],
     "name": "Second Edition Core Set",
-    "sku": "swz01"
+    "sku": "swz01",
+    "wave": 0
   },
   {
     "contents": [
@@ -680,7 +687,8 @@
       }
     ],
     "name": "Lando's Millennium Falcon Expansion Pack",
-    "sku": "swz04"
+    "sku": "swz04",
+    "wave": 1
   },
   {
     "contents": [
@@ -1506,7 +1514,8 @@
       }
     ],
     "name": "Rebel Alliance Conversion Kit",
-    "sku": "swz06"
+    "sku": "swz06",
+    "wave": 1
   },
   {
     "contents": [
@@ -2192,7 +2201,8 @@
       }
     ],
     "name": "Galactic Empire Conversion Kit",
-    "sku": "swz07"
+    "sku": "swz07",
+    "wave": 1
   },
   {
     "contents": [
@@ -3053,460 +3063,8 @@
       }
     ],
     "name": "Scum and Villainy Conversion Kit",
-    "sku": "swz08"
-  },
-  {
-    "contents": [
-      {
-        "count": 1,
-        "type": "ship",
-        "xws": "yt2400lightfreighter"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "dashrendar"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "leebo"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "dashrendar-swz103"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "leebo-swz103"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "dashrendar-swz103-sl-scumandvillainy"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "leebo-swz103-sl-scumandvillainy"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "lonewolf"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "protonrockets"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "heavylasercannon"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "landocalrissian"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "hotshotgunner"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "veteranturretgunner"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "riggedcargochute"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "outrider"
-      }
-    ],
-    "name": "YT-2400 Light Freighter Expansion Pack",
-    "sku": "swz103"
-  },
-  {
-    "contents": [
-      {
-        "count": 1,
-        "type": "ship",
-        "xws": "tieadvancedx1"
-      },
-      {
-        "count": 2,
-        "type": "ship",
-        "xws": "tielnfighter"
-      },
-      {
-        "count": 1,
-        "type": "ship",
-        "xws": "tiesabomber"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "darthvader-swz105"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "maarekstele-swz105"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "captainjonus-swz105"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "tomaxbren-swz105"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "nightbeast-swz105"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "valenrudor-swz105"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "idenversio-swz105"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "darthvader"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "maarekstele"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "captainjonus"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "tomaxbren"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "nightbeast"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "valenrudor"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "idenversio"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "feedbackping"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "outmaneuver"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "instinctiveaim"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "barragerockets"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "protonbombs"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "proximitymines"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "elusive"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "predator"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "heightenedperception"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "protontorpedoes"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "disciplined"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "hate"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "ionmissiles"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "plasmatorpedoes"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "patternanalyzer"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "precisionionengines"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "shieldupgrade"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "afterburners"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "passivesensors"
-      }
-    ],
-    "name": "Galactic Empire Squadron Starter Pack",
-    "sku": "swz105"
-  },
-  {
-    "contents": [
-      {
-        "count": 1,
-        "type": "ship",
-        "xws": "t65xwing"
-      },
-      {
-        "count": 2,
-        "type": "ship",
-        "xws": "rz1awing"
-      },
-      {
-        "count": 1,
-        "type": "ship",
-        "xws": "btla4ywing"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "lukeskywalker-swz106"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "jekporkins-swz106"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "dutchvander-swz106"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "hortonsalm-swz106"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "arvelcrynyd-swz106"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "jakefarrell-swz106"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "sharabey-swz106"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "lukeskywalker"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "jekporkins"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "dutchvander"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "hortonsalm"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "arvelcrynyd"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "jakefarrell"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "sharabey-rz1awing"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "outmaneuver"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "predator"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "protonbombs"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "proximitymines"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "elusive"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "hopeful"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "protontorpedoes"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "ioncannonturret"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "heightenedperception"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "concussionmissiles"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "r2d2"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "r5d8"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "instinctiveaim"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "ionmissiles"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "r4astromech"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "vectoredcannonsrz1"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "afterburners"
-      },
-      {
-        "count": 2,
-        "type": "upgrade",
-        "xws": "shieldupgrade"
-      },
-      {
-        "count": 1,
-        "type": "upgrade",
-        "xws": "servomotorsfoils"
-      }
-    ],
-    "name": "Rebel Alliance Squadron Starter Pack",
-    "sku": "swz106"
+    "sku": "swz08",
+    "wave": 1
   },
   {
     "contents": [
@@ -3572,7 +3130,8 @@
       }
     ],
     "name": "T-65 X-Wing Expansion Pack",
-    "sku": "swz12"
+    "sku": "swz12",
+    "wave": 1
   },
   {
     "contents": [
@@ -3643,7 +3202,8 @@
       }
     ],
     "name": "BTL-A4 Y-Wing Expansion Pack",
-    "sku": "swz13"
+    "sku": "swz13",
+    "wave": 1
   },
   {
     "contents": [
@@ -3724,7 +3284,8 @@
       }
     ],
     "name": "TIE/ln Fighter Expansion Pack",
-    "sku": "swz14"
+    "sku": "swz14",
+    "wave": 1
   },
   {
     "contents": [
@@ -3795,7 +3356,8 @@
       }
     ],
     "name": "TIE Advanced x1 Expansion Pack",
-    "sku": "swz15"
+    "sku": "swz15",
+    "wave": 1
   },
   {
     "contents": [
@@ -3896,7 +3458,8 @@
       }
     ],
     "name": "Slave I Expansion Pack",
-    "sku": "swz16"
+    "sku": "swz16",
+    "wave": 1
   },
   {
     "contents": [
@@ -3957,7 +3520,8 @@
       }
     ],
     "name": "Fang Fighter Expansion Pack",
-    "sku": "swz17"
+    "sku": "swz17",
+    "wave": 1
   },
   {
     "contents": [
@@ -4403,7 +3967,8 @@
       }
     ],
     "name": "First Order Conversion Kit",
-    "sku": "swz18"
+    "sku": "swz18",
+    "wave": 1
   },
   {
     "contents": [
@@ -4934,7 +4499,8 @@
       }
     ],
     "name": "Resistance Conversion Kit",
-    "sku": "swz19"
+    "sku": "swz19",
+    "wave": 1
   },
   {
     "contents": [
@@ -5000,7 +4566,8 @@
       }
     ],
     "name": "RZ-2 A-Wing Expansion Pack",
-    "sku": "swz22"
+    "sku": "swz22",
+    "wave": 2
   },
   {
     "contents": [
@@ -5066,7 +4633,8 @@
       }
     ],
     "name": "Mining Guild TIE Expansion Pack",
-    "sku": "swz23"
+    "sku": "swz23",
+    "wave": 2
   },
   {
     "contents": [
@@ -5167,7 +4735,8 @@
       }
     ],
     "name": "T-70 X-Wing Expansion Pack",
-    "sku": "swz25"
+    "sku": "swz25",
+    "wave": 2
   },
   {
     "contents": [
@@ -5263,7 +4832,8 @@
       }
     ],
     "name": "TIE/FO Fighter Expansion Pack",
-    "sku": "swz26"
+    "sku": "swz26",
+    "wave": 2
   },
   {
     "contents": [
@@ -5329,7 +4899,8 @@
       }
     ],
     "name": "TIE/VN Silencer Expansion Pack",
-    "sku": "swz27"
+    "sku": "swz27",
+    "wave": 2
   },
   {
     "contents": [
@@ -5535,7 +5106,8 @@
       }
     ],
     "name": "Servants of Strife Squadron Pack",
-    "sku": "swz29"
+    "sku": "swz29",
+    "wave": 3
   },
   {
     "contents": [
@@ -5651,7 +5223,8 @@
       }
     ],
     "name": "Sith Infiltrator Expansion Pack",
-    "sku": "swz30"
+    "sku": "swz30",
+    "wave": 3
   },
   {
     "contents": [
@@ -5712,7 +5285,8 @@
       }
     ],
     "name": "Vulture-class Droid Fighter Expansion",
-    "sku": "swz31"
+    "sku": "swz31",
+    "wave": 3
   },
   {
     "contents": [
@@ -5988,7 +5562,8 @@
       }
     ],
     "name": "Guardians of the Republic Squadron Pack",
-    "sku": "swz32"
+    "sku": "swz32",
+    "wave": 3
   },
   {
     "contents": [
@@ -6099,7 +5674,8 @@
       }
     ],
     "name": "ARC-170 Starfighter Expansion",
-    "sku": "swz33"
+    "sku": "swz33",
+    "wave": 3
   },
   {
     "contents": [
@@ -6195,7 +5771,8 @@
       }
     ],
     "name": "Delta-7 Aethersprite Expansion",
-    "sku": "swz34"
+    "sku": "swz34",
+    "wave": 3
   },
   {
     "contents": [
@@ -6251,7 +5828,8 @@
       }
     ],
     "name": "Z-95-AF4 Headhunter Expansion Pack",
-    "sku": "swz37"
+    "sku": "swz37",
+    "wave": 3
   },
   {
     "contents": [
@@ -6312,7 +5890,8 @@
       }
     ],
     "name": "TIE/sk Striker Expansion Pack",
-    "sku": "swz38"
+    "sku": "swz38",
+    "wave": 3
   },
   {
     "contents": [
@@ -6413,7 +5992,8 @@
       }
     ],
     "name": "Millennium Falcon Expansion Pack",
-    "sku": "swz39"
+    "sku": "swz39",
+    "wave": 4
   },
   {
     "contents": [
@@ -6494,7 +6074,8 @@
       }
     ],
     "name": "Naboo Royal N-1 Starfighter Expansion Pack",
-    "sku": "swz40"
+    "sku": "swz40",
+    "wave": 4
   },
   {
     "contents": [
@@ -6585,7 +6166,8 @@
       }
     ],
     "name": "Hyena-Class Droid Bomber Expansion Pack",
-    "sku": "swz41"
+    "sku": "swz41",
+    "wave": 4
   },
   {
     "contents": [
@@ -6656,7 +6238,8 @@
       }
     ],
     "name": "A/SF-01 B-Wing Expansion Pack",
-    "sku": "swz42"
+    "sku": "swz42",
+    "wave": 4
   },
   {
     "contents": [
@@ -6747,7 +6330,8 @@
       }
     ],
     "name": "VT-49 Decimator Expansion Pack",
-    "sku": "swz43"
+    "sku": "swz43",
+    "wave": 4
   },
   {
     "contents": [
@@ -6813,7 +6397,8 @@
       }
     ],
     "name": "TIE/SF Fighter Expansion Pack",
-    "sku": "swz44"
+    "sku": "swz44",
+    "wave": 4
   },
   {
     "contents": [
@@ -6949,7 +6534,8 @@
       }
     ],
     "name": "Resistance Transport Expansion Pack",
-    "sku": "swz45"
+    "sku": "swz45",
+    "wave": 4
   },
   {
     "contents": [
@@ -7020,7 +6606,8 @@
       }
     ],
     "name": "Nantex-class Starfighter Expansion Pack",
-    "sku": "swz47"
+    "sku": "swz47",
+    "wave": 5
   },
   {
     "contents": [
@@ -7121,7 +6708,8 @@
       }
     ],
     "name": "BTL-B Y-Wing Expansion Pack",
-    "sku": "swz48"
+    "sku": "swz48",
+    "wave": 5
   },
   {
     "contents": [
@@ -7257,7 +6845,8 @@
       }
     ],
     "name": "Ghost Expansion Pack",
-    "sku": "swz49"
+    "sku": "swz49",
+    "wave": 5
   },
   {
     "contents": [
@@ -7313,7 +6902,8 @@
       }
     ],
     "name": "Inquisitors' TIE Expansion Pack",
-    "sku": "swz50"
+    "sku": "swz50",
+    "wave": 5
   },
   {
     "contents": [
@@ -7404,7 +6994,8 @@
       }
     ],
     "name": "Punishing One Expansion Pack",
-    "sku": "swz51"
+    "sku": "swz51",
+    "wave": 5
   },
   {
     "contents": [
@@ -7480,7 +7071,8 @@
       }
     ],
     "name": "M3-A Interceptor Expansion Pack",
-    "sku": "swz52"
+    "sku": "swz52",
+    "wave": 5
   },
   {
     "contents": [
@@ -7831,7 +7423,8 @@
       }
     ],
     "name": "Huge Ship Conversion Kit",
-    "sku": "swz53"
+    "sku": "swz53",
+    "wave": 6
   },
   {
     "contents": [
@@ -7992,7 +7585,8 @@
       }
     ],
     "name": "Tantive IV Expansion Pack",
-    "sku": "swz55"
+    "sku": "swz55",
+    "wave": 6
   },
   {
     "contents": [
@@ -8163,7 +7757,8 @@
       }
     ],
     "name": "C-ROC Cruiser Expansion Pack",
-    "sku": "swz56"
+    "sku": "swz56",
+    "wave": 6
   },
   {
     "contents": [
@@ -8189,7 +7784,8 @@
       }
     ],
     "name": "Epic Battles Multiplayer Expansion",
-    "sku": "swz57"
+    "sku": "swz57",
+    "wave": 6
   },
   {
     "contents": [
@@ -8305,7 +7901,8 @@
       }
     ],
     "name": "Hound's Tooth Expansion Pack",
-    "sku": "swz58"
+    "sku": "swz58",
+    "wave": 6
   },
   {
     "contents": [
@@ -8361,7 +7958,8 @@
       }
     ],
     "name": "TIE/in Interceptor Expansion Pack",
-    "sku": "swz59"
+    "sku": "swz59",
+    "wave": 6
   },
   {
     "contents": [
@@ -8417,7 +8015,8 @@
       }
     ],
     "name": "TIE/D Defender Expansion Pack",
-    "sku": "swz60"
+    "sku": "swz60",
+    "wave": 6
   },
   {
     "contents": [
@@ -8473,7 +8072,8 @@
       }
     ],
     "name": "RZ-1 A-Wing Expansion Pack",
-    "sku": "swz61"
+    "sku": "swz61",
+    "wave": 6
   },
   {
     "contents": [
@@ -8534,7 +8134,8 @@
       }
     ],
     "name": "Major Vonreg's TIE Expansion Pack",
-    "sku": "swz62"
+    "sku": "swz62",
+    "wave": 6
   },
   {
     "contents": [
@@ -8600,7 +8201,8 @@
       }
     ],
     "name": "Fireball Expansion Pack",
-    "sku": "swz63"
+    "sku": "swz63",
+    "wave": 6
   },
   {
     "contents": [
@@ -8691,7 +8293,8 @@
       }
     ],
     "name": "Never Tell Me the Odds Obstacles Pack",
-    "sku": "swz64"
+    "sku": "swz64",
+    "wave": 7
   },
   {
     "contents": [
@@ -8747,7 +8350,8 @@
       }
     ],
     "name": "Fully Loaded Devices Pack",
-    "sku": "swz65"
+    "sku": "swz65",
+    "wave": 7
   },
   {
     "contents": [
@@ -8963,7 +8567,8 @@
       }
     ],
     "name": "Hotshots and Aces Reinforcements Pack",
-    "sku": "swz66"
+    "sku": "swz66",
+    "wave": 7
   },
   {
     "contents": [
@@ -9039,7 +8644,8 @@
       }
     ],
     "name": "TIE/rb Heavy Expansion Pack",
-    "sku": "swz67"
+    "sku": "swz67",
+    "wave": 7
   },
   {
     "contents": [
@@ -9205,7 +8811,8 @@
       }
     ],
     "name": "Heralds of Hope Expansion Pack",
-    "sku": "swz68"
+    "sku": "swz68",
+    "wave": 7
   },
   {
     "contents": [
@@ -9296,7 +8903,8 @@
       }
     ],
     "name": "Xi-class Light Shuttle Expansion Pack",
-    "sku": "swz69"
+    "sku": "swz69",
+    "wave": 7
   },
   {
     "contents": [
@@ -9397,7 +9005,8 @@
       }
     ],
     "name": "LAAT/i Gunship Expansion Pack",
-    "sku": "swz70"
+    "sku": "swz70",
+    "wave": 7
   },
   {
     "contents": [
@@ -9473,7 +9082,8 @@
       }
     ],
     "name": "HMP Droid Gunship Expansion Pack",
-    "sku": "swz71"
+    "sku": "swz71",
+    "wave": 7
   },
   {
     "contents": [
@@ -9554,7 +9164,8 @@
       }
     ],
     "name": "Eta-2 Actis Expansion Pack",
-    "sku": "swz79"
+    "sku": "swz79",
+    "wave": 7
   },
   {
     "contents": [
@@ -9630,7 +9241,8 @@
       }
     ],
     "name": "Nimbus-class V-Wing Expansion Pack",
-    "sku": "swz80"
+    "sku": "swz80",
+    "wave": 7
   },
   {
     "contents": [
@@ -9701,7 +9313,8 @@
       }
     ],
     "name": "Droid Tri-Fighter Expansion Pack",
-    "sku": "swz81"
+    "sku": "swz81",
+    "wave": 8
   },
   {
     "contents": [
@@ -9797,7 +9410,8 @@
       }
     ],
     "name": "Jango Fett's Slave I Expansion Pack",
-    "sku": "swz82"
+    "sku": "swz82",
+    "wave": 8
   },
   {
     "contents": [
@@ -9998,7 +9612,8 @@
       }
     ],
     "name": "Phoenix Cell Squadron Pack",
-    "sku": "swz83"
+    "sku": "swz83",
+    "wave": 9
   },
   {
     "contents": [
@@ -10189,7 +9804,8 @@
       }
     ],
     "name": "Skystrike Academy Squadron Pack",
-    "sku": "swz84"
+    "sku": "swz84",
+    "wave": 9
   },
   {
     "contents": [
@@ -10395,7 +10011,8 @@
       }
     ],
     "name": "Fugitives and Collaborators Squadron Pack",
-    "sku": "swz85"
+    "sku": "swz85",
+    "wave": 9
   },
   {
     "contents": [
@@ -10516,7 +10133,8 @@
       }
     ],
     "name": "BTA-NR2 Y-Wing Pack",
-    "sku": "swz86"
+    "sku": "swz86",
+    "wave": 10
   },
   {
     "contents": [
@@ -10692,7 +10310,8 @@
       }
     ],
     "name": "Fury of the First Order",
-    "sku": "swz87"
+    "sku": "swz87",
+    "wave": 10
   },
   {
     "contents": [
@@ -10898,7 +10517,8 @@
       }
     ],
     "name": "Trident-class Assault Ship Expansion Pack",
-    "sku": "swz88"
+    "sku": "swz88",
+    "wave": 11
   },
   {
     "contents": [
@@ -11009,7 +10629,8 @@
       }
     ],
     "name": "Clone Z-95 Headhunter Expansion pack",
-    "sku": "swz89"
+    "sku": "swz89",
+    "wave": 11
   },
   {
     "contents": [
@@ -11110,7 +10731,8 @@
       }
     ],
     "name": "Razor Crest Expansion Pack",
-    "sku": "swz90"
+    "sku": "swz90",
+    "wave": 12
   },
   {
     "contents": [
@@ -11261,7 +10883,8 @@
       }
     ],
     "name": "Gauntlet Fighter Expansion pack",
-    "sku": "swz91"
+    "sku": "swz91",
+    "wave": 12
   },
   {
     "contents": [
@@ -11377,7 +11000,8 @@
       }
     ],
     "name": "Rogue-class Starfighter Expansion pack",
-    "sku": "swz92"
+    "sku": "swz92",
+    "wave": 12
   },
   {
     "contents": [
@@ -11638,7 +11262,8 @@
       }
     ],
     "name": "Pride of Mandalore Reinforcements Pack",
-    "sku": "swz93"
+    "sku": "swz93",
+    "wave": 12
   },
   {
     "contents": [
@@ -11744,7 +11369,8 @@
       }
     ],
     "name": "Siege of Coruscant Battle Pack",
-    "sku": "swz95"
+    "sku": "swz95",
+    "wave": 13
   },
   {
     "contents": [
@@ -11850,7 +11476,8 @@
       }
     ],
     "name": "Battle of Yavin Battle Pack",
-    "sku": "swz96"
+    "sku": "swz96",
+    "wave": 13
   },
   {
     "contents": [
@@ -12036,19 +11663,269 @@
       }
     ],
     "name": "Hotshots and Aces II Reinforcements Pack",
-    "sku": "swz97"
+    "sku": "swz97",
+    "wave": 13
   },
   {
     "contents": [
       {
+        "count": 1,
+        "type": "ship",
+        "xws": "yt2400lightfreighter"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "dashrendar"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "leebo"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "dashrendar-swz103"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "leebo-swz103"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "dashrendar-swz103-sl-scumandvillainy"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "leebo-swz103-sl-scumandvillainy"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "lonewolf"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "protonrockets"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "heavylasercannon"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "landocalrissian"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "hotshotgunner"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "veteranturretgunner"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "riggedcargochute"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "outrider"
+      }
+    ],
+    "name": "YT-2400 Light Freighter Expansion Pack",
+    "sku": "swz103",
+    "wave": 14
+  },
+  {
+    "contents": [
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "tiesabomber"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "deathfire"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "captainjonus"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "tomaxbren"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "majorrhymer"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "scimitarsquadronpilot"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "gammasquadronace"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "deathfire-swz98"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "captainjonus-swz98"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "tomaxbren-swz98"
+      },
+      {
+        "count": 0,
+        "type": "pilot",
+        "xws": "majorrhymer-swz98"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "advprotontorpedoes"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "protonbombs"
+      },
+      {
+        "count": 0,
+        "type": "upgrade",
+        "xws": "connernets"
+      },
+      {
+        "count": 0,
+        "type": "upgrade",
+        "xws": "seismiccharges"
+      },
+      {
+        "count": 0,
+        "type": "upgrade",
+        "xws": "clustermissiles"
+      },
+      {
+        "count": 0,
+        "type": "upgrade",
+        "xws": "saturationsalvo"
+      },
+      {
+        "count": 0,
+        "type": "upgrade",
+        "xws": "ionmissiles"
+      },
+      {
+        "count": 0,
+        "type": "upgrade",
+        "xws": "skilledbombardier"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "ionbombs"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "feedbackping"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "disciplined"
+      }
+    ],
+    "name": "TIE/sa TIE Bomber Expansion Pack",
+    "sku": "swz98",
+    "wave": 14
+  },
+  {
+    "contents": [
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "tieadvancedx1"
+      },
+      {
         "count": 2,
+        "type": "ship",
+        "xws": "tielnfighter"
+      },
+      {
+        "count": 1,
         "type": "ship",
         "xws": "tiesabomber"
       },
       {
         "count": 1,
         "type": "pilot",
-        "xws": "deathfire"
+        "xws": "darthvader-swz105"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "maarekstele-swz105"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "captainjonus-swz105"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "tomaxbren-swz105"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "nightbeast-swz105"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "valenrudor-swz105"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "idenversio-swz105"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "darthvader"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "maarekstele"
       },
       {
         "count": 1,
@@ -12063,96 +11940,304 @@
       {
         "count": 1,
         "type": "pilot",
-        "xws": "majorrhymer"
-      },
-      {
-        "count": 2,
-        "type": "pilot",
-        "xws": "scimitarsquadronpilot"
-      },
-      {
-        "count": 2,
-        "type": "pilot",
-        "xws": "gammasquadronace"
+        "xws": "nightbeast"
       },
       {
         "count": 1,
         "type": "pilot",
-        "xws": "deathfire-swz98"
+        "xws": "valenrudor"
       },
       {
         "count": 1,
         "type": "pilot",
-        "xws": "captainjonus-swz98"
+        "xws": "idenversio"
       },
       {
         "count": 1,
-        "type": "pilot",
-        "xws": "tomaxbren-swz98"
-      },
-      {
-        "count": 1,
-        "type": "pilot",
-        "xws": "majorrhymer-swz98"
-      },
-      {
-        "count": 2,
         "type": "upgrade",
-        "xws": "advprotontorpedoes"
+        "xws": "feedbackping"
       },
       {
-        "count": 2,
+        "count": 1,
+        "type": "upgrade",
+        "xws": "outmaneuver"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "instinctiveaim"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "barragerockets"
+      },
+      {
+        "count": 1,
         "type": "upgrade",
         "xws": "protonbombs"
       },
       {
         "count": 1,
         "type": "upgrade",
-        "xws": "connernets"
+        "xws": "proximitymines"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "elusive"
       },
       {
         "count": 1,
         "type": "upgrade",
-        "xws": "seismiccharges"
+        "xws": "predator"
       },
       {
         "count": 1,
         "type": "upgrade",
-        "xws": "clustermissiles"
+        "xws": "heightenedperception"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "protontorpedoes"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "disciplined"
       },
       {
         "count": 1,
         "type": "upgrade",
-        "xws": "saturationsalvo"
+        "xws": "hate"
       },
       {
-        "count": 1,
+        "count": 2,
         "type": "upgrade",
         "xws": "ionmissiles"
       },
       {
         "count": 1,
         "type": "upgrade",
-        "xws": "skilledbombardier"
+        "xws": "plasmatorpedoes"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "patternanalyzer"
       },
       {
         "count": 2,
         "type": "upgrade",
-        "xws": "ionbombs"
+        "xws": "precisionionengines"
       },
       {
         "count": 2,
         "type": "upgrade",
-        "xws": "feedbackping"
+        "xws": "shieldupgrade"
       },
       {
-        "count": 2,
+        "count": 1,
         "type": "upgrade",
-        "xws": "disciplined"
+        "xws": "afterburners"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "passivesensors"
       }
     ],
-    "name": "TIE/sa TIE Bomber Expansion Pack",
-    "sku": "swz98"
+    "name": "Galactic Empire Squadron Starter Pack",
+    "sku": "swz105",
+    "wave": 15
+  },
+  {
+    "contents": [
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "t65xwing"
+      },
+      {
+        "count": 2,
+        "type": "ship",
+        "xws": "rz1awing"
+      },
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "btla4ywing"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "lukeskywalker-swz106"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "jekporkins-swz106"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "dutchvander-swz106"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "hortonsalm-swz106"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "arvelcrynyd-swz106"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "jakefarrell-swz106"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "sharabey-swz106"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "lukeskywalker"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "jekporkins"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "dutchvander"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "hortonsalm"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "arvelcrynyd"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "jakefarrell"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "sharabey-rz1awing"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "outmaneuver"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "predator"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "protonbombs"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "proximitymines"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "elusive"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "hopeful"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "protontorpedoes"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "ioncannonturret"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "heightenedperception"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "concussionmissiles"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "r2d2"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "r5d8"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "instinctiveaim"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "ionmissiles"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "r4astromech"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "vectoredcannonsrz1"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "afterburners"
+      },
+      {
+        "count": 2,
+        "type": "upgrade",
+        "xws": "shieldupgrade"
+      },
+      {
+        "count": 1,
+        "type": "upgrade",
+        "xws": "servomotorsfoils"
+      }
+    ],
+    "name": "Rebel Alliance Squadron Starter Pack",
+    "sku": "swz106",
+    "wave": 15
   },
   {
     "contents": [
@@ -12248,6 +12333,7 @@
       }
     ],
     "name": "Unreleased for 2nd Edition",
-    "sku": "swzunreleased"
+    "sku": "swzunreleased",
+    "wave": 99
   }
 ]
