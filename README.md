@@ -73,9 +73,17 @@ some tests for anything you are going to add.
 1. ...
 1. Check if any ships can be removed from the `swzunreleased` placeholder.
 
-## Initial `expansions.json`
+## Expansions
+
+Wave numbers are _roughly_ based on release date, which are more in line with
+the SKUs. This is in contrast to the [waves in the wiki](https://xwing-miniatures-second-edition.fandom.com/wiki/Products)
+which groups by announcement date and separates some expansions.
+
+### Initial `expansions.json`
 
 See [this terrible script](https://github.com/awsaba/xwing/blob/awsaba/xws-content-dumper/coffeescripts/content/dump-content.coffee).
+
+
 
 ## Acknowledgements and Licenses
 

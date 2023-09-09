@@ -100,6 +100,7 @@ pub type SKU = String;
 pub struct Expansion {
     pub sku: SKU,
     pub name: String,
+    pub wave: u32,
     pub contents: Vec<ItemCount>,
 }
 
