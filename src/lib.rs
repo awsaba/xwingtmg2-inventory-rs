@@ -14,12 +14,16 @@ pub mod expansions;
 pub mod xwingdata2;
 pub mod yasb2;
 
-use expansions::{Catalog, ItemCount, ItemType, SKU};
+use expansions::{Catalog, Expansion, ItemCount, ItemType, SKU};
 use serde::{Deserialize, Serialize};
 use xwingdata2::Data;
 
+use rust_xlsxwriter::utility::row_col_to_cell;
+use rust_xlsxwriter::{Table, TableStyle, Workbook, XlsxError};
+
 use std::collections::BTreeMap;
 
+#[derive(Debug)]
 pub enum ErrorKind {
     NotFound,
 }
@@ -83,24 +87,19 @@ pub struct ShipRecord {
 
 impl ShipRecord {
     /// Turns skus and xws id's into display names.
-    pub fn build(
-        xws: &str,
-        count: u32,
-        data: &Data,
-        expansions: &Catalog,
-    ) -> Result<Self, ErrorKind> {
+    pub fn build(xws: &str, count: u32, data: &Data, catalog: &Catalog) -> Result<Self, ErrorKind> {
         match data.get_ship(xws) {
             None => Err(ErrorKind::NotFound),
             Some(s) => Ok(Self {
                 name: s.name.to_owned(),
                 xws: s.xws.to_owned(),
-                sources: expansions
+                sources: catalog
                     .sources
                     .get(&Item {
                         r#type: ItemType::Ship,
                         xws: xws.to_owned(),
                     })
-                    .map(|s| format_sources(expansions, s)),
+                    .map(|s| format_sources(catalog, s)),
                 count,
             }),
         }
@@ -175,12 +174,7 @@ pub struct UpgradeRecord {
 
 impl UpgradeRecord {
     /// Turns skus and xws id's into display names.
-    pub fn build(
-        xws: &str,
-        count: u32,
-        data: &Data,
-        expansions: &Catalog,
-    ) -> Result<Self, ErrorKind> {
+    pub fn build(xws: &str, count: u32, data: &Data, catalog: &Catalog) -> Result<Self, ErrorKind> {
         // TODO: there must be a better way to do the restrictions
         match data.get_upgrade(xws) {
             None => Err(ErrorKind::NotFound),
@@ -200,13 +194,13 @@ impl UpgradeRecord {
                 keyword_restriction: format_restriction(&u.restrictions, Restriction::Keywords),
                 force_side_restriction: format_restriction(&u.restrictions, Restriction::ForceSide),
                 arc_restriction: format_restriction(&u.restrictions, Restriction::Arcs),
-                sources: expansions
+                sources: catalog
                     .sources
                     .get(&Item {
                         r#type: ItemType::Upgrade,
                         xws: xws.to_owned(),
                     })
-                    .map(|s| format_sources(expansions, s)),
+                    .map(|s| format_sources(catalog, s)),
             }),
         }
     }
@@ -246,4 +240,328 @@ fn format_sources(expansions: &expansions::Catalog, sources: &Vec<ItemCount>) ->
     }
 
     strs.join(",")
+}
+
+// TODO: Figure out what is generic here
+#[derive(Default, Serialize)]
+pub struct Records {
+    pub ships: Vec<ShipRecord>,
+    pub pilots: Vec<PilotRecord>,
+    pub upgrades: Vec<UpgradeRecord>,
+}
+
+impl Records {
+    pub fn build(inventory: &Inventory, data: &Data, catalog: &Catalog) -> Records {
+        let mut records = Records::default();
+
+        for (item, count) in inventory {
+            match &item.r#type {
+                ItemType::Ship => {
+                    match ShipRecord::build(&item.xws, *count, data, catalog) {
+                        Ok(r) => records.ships.push(r),
+                        Err(_) => println!("ship not found: {}", &item.xws),
+                    };
+                }
+                ItemType::Pilot => {
+                    match PilotRecord::build(&item.xws, *count, data, catalog) {
+                        Ok(r) => records.pilots.push(r),
+                        Err(_) => println!("pilot not found: {}", &item.xws),
+                    };
+                }
+                ItemType::Upgrade => {
+                    match UpgradeRecord::build(&item.xws, *count, data, catalog) {
+                        Ok(u) => records.upgrades.push(u),
+                        Err(_) => println!("Upgrade not found: {}", &item.xws),
+                    };
+                }
+                _ => (),
+            };
+        }
+        records
+    }
+}
+
+pub fn generate_xls(
+    catalog: &Catalog,
+    data: &Data,
+    collection: &Collection,
+    inventory: &Inventory,
+) -> Result<(), XlsxError> {
+    let mut workbook = Workbook::new();
+
+    add_expansion_sheet(&mut workbook, catalog, collection)?;
+    // This must be done seperately because of the way borrows work on the
+    // workbook make it hard to work with more than 1 sheet at once.
+    add_ships_sheet(&mut workbook, catalog, data, collection, inventory)?;
+    add_pilots_sheet(&mut workbook, catalog, data, collection, inventory)?;
+    add_upgrades_sheet(&mut workbook, catalog, data, collection, inventory)?;
+
+    workbook.save("XWingTMG2_Inventory.xlsx")?;
+
+    Ok(())
+}
+
+const EXPANSION_COLS: [&str; 4] = ["Owned", "Name", "Wave", "SKU"];
+
+fn add_expansion_sheet(
+    workbook: &mut Workbook,
+    catalog: &Catalog,
+    collection: &Collection,
+) -> Result<(), XlsxError> {
+    let worksheet = workbook.add_worksheet().set_name("Expansions")?;
+    for (i, col) in EXPANSION_COLS.iter().enumerate() {
+        worksheet.write(0, i as u16, *col)?;
+    }
+    let unknown = Expansion {
+        sku: "error".to_string(),
+        name: "notfound".to_string(),
+        wave: 0,
+        contents: vec![],
+    };
+    let mut row = 1;
+    for (e, c) in &collection.skus {
+        let exp = catalog.expansions.get(e).unwrap_or(&unknown);
+        worksheet.write(row, 0, *c)?;
+        worksheet.write(row, 1, &exp.name)?;
+        worksheet.write(row, 2, exp.wave)?;
+        worksheet.write(row, 3, &exp.sku)?;
+        row += 1;
+    }
+    let mut table = Table::new();
+    table.set_style(TableStyle::Medium2);
+    table.set_name("ExpansionLookup");
+    worksheet.add_table(0, 0, row - 1, (EXPANSION_COLS.len() as u16) - 1, &table)?;
+    worksheet.autofit();
+    Ok(())
+}
+
+fn total_func(item: &Item, singles_cell: String, catalog: &Catalog) -> String {
+    let mut func = format!("={}", singles_cell);
+
+    if let Some(sources) = catalog.sources.get(item) {
+        for source in sources {
+            func.push_str(&format!("+{}*XLOOKUP(\"", source.count));
+            func.push_str(&source.item.xws);
+            func.push_str("\",ExpansionLookup[SKU],ExpansionLookup[Owned],0,0)");
+        }
+    }
+
+    func
+}
+
+const SHIP_COLS: [&str; 5] = ["Name", "Total", "Singles", "XWS", "Sources"];
+fn add_ships_sheet(
+    workbook: &mut Workbook,
+    catalog: &Catalog,
+    data: &Data,
+    collection: &Collection,
+    inventory: &BTreeMap<Item, u32>,
+) -> Result<(), XlsxError> {
+    let ships = workbook.add_worksheet().set_name("Ships")?;
+    for (i, col) in SHIP_COLS.iter().enumerate() {
+        ships.write(0, i as u16, *col)?;
+    }
+
+    let mut ship_row = 1;
+    let ship_singles_col = 2;
+    for item in inventory.keys() {
+        if item.r#type == ItemType::Ship {
+            let model = match data.get_ship(&item.xws) {
+                Some(m) => m,
+                None => {
+                    println!("xslx: missing ship {}", item.xws);
+                    continue;
+                }
+            };
+
+            ships.write(ship_row, 0, &model.name)?;
+            ships.write_dynamic_formula(
+                ship_row,
+                1,
+                total_func(item, row_col_to_cell(ship_row, ship_singles_col), catalog).as_str(),
+            )?;
+            ships.write(
+                ship_row,
+                2,
+                *collection.singles.get(item).unwrap_or(&0) as i32,
+            )?;
+            ships.write(ship_row, 3, &model.xws)?;
+            ships.write(
+                ship_row,
+                4,
+                catalog
+                    .sources
+                    .get(item)
+                    .map(|s| format_sources(catalog, s))
+                    .unwrap_or("".to_string()), //.unwrap_or("".to_string()),
+            )?;
+
+            ship_row += 1;
+        }
+    }
+    let mut table = Table::new();
+    table.set_name("ShipTable");
+    table.set_style(TableStyle::Medium3);
+    ships.add_table(0, 0, ship_row - 1, SHIP_COLS.len() as u16 - 1, &table)?;
+    ships.autofit();
+    Ok(())
+}
+
+const PILOT_COLS: [&str; 8] = [
+    "Name",
+    "Ship",
+    "Initiative",
+    "Faction",
+    "Total",
+    "Singles",
+    "XWS",
+    "Sources",
+];
+fn add_pilots_sheet(
+    workbook: &mut Workbook,
+    catalog: &Catalog,
+    data: &Data,
+    collection: &Collection,
+    inventory: &BTreeMap<Item, u32>,
+) -> Result<(), XlsxError> {
+    let pilots = workbook.add_worksheet().set_name("Pilots")?;
+    for (i, col) in PILOT_COLS.iter().enumerate() {
+        pilots.write(0, i as u16, *col)?;
+    }
+
+    let mut pilot_row = 1;
+    let pilot_singles_col = 5;
+    for item in inventory.keys() {
+        if item.r#type == ItemType::Pilot {
+            // TODO: probably don't need to
+            let (ship, pilot) = match data.get_pilot(&item.xws) {
+                Some(m) => m,
+                None => {
+                    println!("xslx: missing pilot {}", item.xws);
+                    continue;
+                }
+            };
+
+            pilots.write(pilot_row, 0, &pilot.name)?;
+            pilots.write(pilot_row, 1, &ship.name)?;
+            pilots.write(pilot_row, 2, pilot.initiative)?;
+            pilots.write(pilot_row, 3, &ship.faction)?;
+            pilots.write_dynamic_formula(
+                pilot_row,
+                4,
+                total_func(item, row_col_to_cell(pilot_row, pilot_singles_col), catalog).as_str(),
+            )?;
+            pilots.write(
+                pilot_row,
+                5,
+                *collection.singles.get(item).unwrap_or(&0) as i32,
+            )?;
+            pilots.write(pilot_row, 6, &pilot.xws)?;
+            pilots.write(
+                pilot_row,
+                7,
+                catalog
+                    .sources
+                    .get(item)
+                    .map(|s| format_sources(catalog, s))
+                    .unwrap_or("".to_string()), //.unwrap_or("".to_string()),
+            )?;
+
+            pilot_row += 1;
+        }
+    }
+    let mut table = Table::new();
+    table.set_name("pilotTable");
+    table.set_style(TableStyle::Medium4);
+    pilots.add_table(0, 0, pilot_row - 1, PILOT_COLS.len() as u16 - 1, &table)?;
+    pilots.autofit();
+    Ok(())
+}
+
+const UPGRADE_COLS: [&str; 12] = [
+    "Name",
+    "Type",
+    "Faction Restriction",
+    "Ship Restriction",
+    "Size Restriction",
+    "Arc Restriction",
+    "Force Side Restriction",
+    "Keyword Restriction",
+    "Total",
+    "Singles",
+    "XWS",
+    "Sources",
+];
+
+fn add_upgrades_sheet(
+    workbook: &mut Workbook,
+    catalog: &Catalog,
+    data: &Data,
+    collection: &Collection,
+    inventory: &BTreeMap<Item, u32>,
+) -> Result<(), XlsxError> {
+    let upgrades = workbook.add_worksheet().set_name("Upgrades")?;
+    for (i, col) in UPGRADE_COLS.iter().enumerate() {
+        upgrades.write(0, i as u16, *col)?;
+    }
+
+    let mut upgrade_row = 1;
+    let upgrade_singles_col = 9;
+    for item in inventory.keys() {
+        if item.r#type == ItemType::Upgrade {
+            let upgrade = match data.get_upgrade(&item.xws) {
+                Some(m) => m,
+                None => {
+                    println!("xslx: missing upgrade {}", item.xws);
+                    continue;
+                }
+            };
+
+            let record = UpgradeRecord::build(&item.xws, 1, data, catalog).unwrap();
+
+            upgrades.write(upgrade_row, 0, &upgrade.name)?;
+            upgrades.write(upgrade_row, 1, &record.r#type)?;
+
+            upgrades.write(upgrade_row, 2, &record.faction_restriction)?;
+            upgrades.write(upgrade_row, 3, &record.ship_restriction)?;
+            upgrades.write(upgrade_row, 4, &record.size_restriction)?;
+            upgrades.write(upgrade_row, 5, &record.arc_restriction)?;
+            upgrades.write(upgrade_row, 6, &record.force_side_restriction)?;
+            upgrades.write(upgrade_row, 7, &record.keyword_restriction)?;
+
+            upgrades.write_dynamic_formula(
+                upgrade_row,
+                8,
+                total_func(
+                    item,
+                    row_col_to_cell(upgrade_row, upgrade_singles_col),
+                    catalog,
+                )
+                .as_str(),
+            )?;
+            upgrades.write(
+                upgrade_row,
+                9,
+                *collection.singles.get(item).unwrap_or(&0) as i32,
+            )?;
+            upgrades.write(upgrade_row, 10, &upgrade.xws)?;
+            upgrades.write(
+                upgrade_row,
+                11,
+                catalog
+                    .sources
+                    .get(item)
+                    .map(|s| format_sources(catalog, s))
+                    .unwrap_or("".to_string()), //.unwrap_or("".to_string()),
+            )?;
+
+            upgrade_row += 1;
+        }
+    }
+    let mut table = Table::new();
+    table.set_name("upgradeTable");
+    table.set_style(TableStyle::Medium5);
+    upgrades.add_table(0, 0, upgrade_row - 1, UPGRADE_COLS.len() as u16 - 1, &table)?;
+    upgrades.autofit();
+    Ok(())
 }

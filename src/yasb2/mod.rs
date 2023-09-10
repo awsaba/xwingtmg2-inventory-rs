@@ -29,7 +29,7 @@ pub struct Singletons {
 }
 
 /// A YASB collection.
-#[derive(Deserialize, Serialize, Debug)]
+#[derive(Deserialize, Serialize, Default, Debug)]
 pub struct Collection {
     /// A map of expansion names to counts.
     pub expansions: HashMap<String, String>,
