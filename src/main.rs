@@ -1,13 +1,10 @@
-use std::fs::File;
 use std::path::Path;
 use std::process::exit;
+use std::{fs::File, path::PathBuf};
 
-use serde::Serialize;
-use xwingtmg2_inventory_rs::{
-    expansions::{Catalog, ItemType},
-    xwingdata2::Data,
-    yasb2, Collection, Inventory, PilotRecord, ShipRecord, UpgradeRecord,
-};
+use strum::EnumString;
+use xwingtmg2_inventory_rs::Records;
+use xwingtmg2_inventory_rs::{expansions::Catalog, xwingdata2::Data, yasb2, Collection};
 
 const HELP: &str = "\
 xwingtmg2-inventory
@@ -17,11 +14,23 @@ USAGE:
 
 FLAGS:
   -h, --help            Prints help information
-  -l, --list-missing    Includes all known expansions and there contents with a count of 0
+  -f, --format          JSON or XLSX (default: JSON)
+  -c, --collection      A YASB collection in YASB's json format
+  -o, --only-owned      Includes all known expansions and contents
 ";
 
+#[derive(PartialEq, EnumString)]
+enum Format {
+    #[strum(serialize = "json", serialize = "JSON")]
+    Json,
+    #[strum(serialize = "xlsx", serialize = "XLSX")]
+    Xlsx,
+}
+
 struct Args {
-    list_missing: bool,
+    only_owned: bool,
+    collection_json: Option<PathBuf>,
+    format: Format,
 }
 
 fn parse_args() -> Result<Args, pico_args::Error> {
@@ -34,7 +43,11 @@ fn parse_args() -> Result<Args, pico_args::Error> {
     }
 
     let args = Args {
-        list_missing: pargs.contains(["-l", "--list-missing"]),
+        only_owned: pargs.contains(["-l", "--only-owned"]),
+        collection_json: pargs.opt_value_from_os_str(["-c", "--collection"], parse_path)?,
+        format: pargs
+            .opt_value_from_str::<_, Format>(["-f", "--format"])?
+            .unwrap_or(Format::Json),
     };
 
     // It's up to the caller what to do with the remaining arguments.
@@ -46,12 +59,8 @@ fn parse_args() -> Result<Args, pico_args::Error> {
     Ok(args)
 }
 
-// TODO: Figure out what is generic here
-#[derive(Default, Serialize)]
-struct Records {
-    pub ships: Vec<ShipRecord>,
-    pub pilots: Vec<PilotRecord>,
-    pub upgrades: Vec<UpgradeRecord>,
+fn parse_path(s: &std::ffi::OsStr) -> Result<std::path::PathBuf, &'static str> {
+    Ok(s.into())
 }
 
 fn main() {
@@ -80,12 +89,15 @@ fn main() {
         }
     };
 
-    let yasb_coll = match yasb2::Collection::load(Path::new("collection.json")) {
-        Ok(c) => c,
-        Err(e) => {
-            println!("{:?}", e);
-            exit(1)
-        }
+    let yasb_coll = match args.collection_json {
+        None => yasb2::Collection::default(),
+        Some(p) => match yasb2::Collection::load(&p) {
+            Ok(c) => c,
+            Err(e) => {
+                println!("{:?}", e);
+                exit(1)
+            }
+        },
     };
 
     let (mut skus, missing) = yasb_coll.expansion_skus(&catalog);
@@ -95,7 +107,7 @@ fn main() {
         println!("- {}", n);
     }
 
-    if args.list_missing {
+    if !args.only_owned {
         for sku in catalog.expansions.keys() {
             if skus.get(sku).is_none() {
                 skus.insert(sku.to_owned(), 0);
@@ -117,8 +129,9 @@ fn main() {
     }
 
     // TODO: Can some this to_owned() just be references?
-    // TODO: Find a CSV serializer, but for now, dump as json and use jq
-    let records = assemble_records(&inventory, &data, &catalog);
+    // FIXME: This is doing a bunch of stuff twice for xlsx generatino, but
+    // the stats are nice, so keeping it for now.
+    let records = Records::build(&inventory, &data, &catalog);
     println!(
         "Total {} ships, {}/{} unique",
         records.ships.iter().fold(0, |acc, r| acc + r.count),
@@ -147,40 +160,19 @@ fn main() {
         records.upgrades.len(),
     );
 
-    let f = File::create("inventory.json").unwrap();
-    match serde_json::to_writer(f, &records) {
-        Ok(_) => println!("inventory.json written"),
-        Err(err) => println!("inventory.json error: {}", err),
+    match args.format {
+        Format::Json => {
+            let f = File::create("inventory.json").unwrap();
+            match serde_json::to_writer(f, &records) {
+                Ok(_) => println!("inventory.json written"),
+                Err(err) => println!("inventory.json error: {}", err),
+            }
+        }
+        Format::Xlsx => {
+            match xwingtmg2_inventory_rs::generate_xls(&catalog, &data, &collection, &inventory) {
+                Ok(_) => println!("xlsx written"),
+                Err(err) => println!("xlsx error: {}", err),
+            }
+        }
     };
-}
-
-fn assemble_records(inventory: &Inventory, data: &Data, catalog: &Catalog) -> Records {
-    let mut records = Records {
-        ..Default::default()
-    };
-
-    for (item, count) in inventory {
-        match &item.r#type {
-            ItemType::Ship => {
-                match ShipRecord::build(&item.xws, *count, data, catalog) {
-                    Ok(r) => records.ships.push(r),
-                    Err(_) => println!("ship not found: {}", &item.xws),
-                };
-            }
-            ItemType::Pilot => {
-                match PilotRecord::build(&item.xws, *count, data, catalog) {
-                    Ok(r) => records.pilots.push(r),
-                    Err(_) => println!("pilot not found: {}", &item.xws),
-                };
-            }
-            ItemType::Upgrade => {
-                match UpgradeRecord::build(&item.xws, *count, data, catalog) {
-                    Ok(u) => records.upgrades.push(u),
-                    Err(_) => println!("Upgrade not found: {}", &item.xws),
-                };
-            }
-            _ => (),
-        };
-    }
-    records
 }
