@@ -1,4 +1,4 @@
-# yasb collection to inventory dumper
+# X-Wing: The Miniature Game 2.0/2.5 Inventory Management Tools
 
 This repository generates an Microsoft® Excel® for Microsoft 365 MSO for keeping
 track of an X-Wing: The Miniature Game 2.0/2.5 colletion.
