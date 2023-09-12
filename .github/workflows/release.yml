@@ -35,14 +35,16 @@ jobs:
     # env:
     # Set to force version number, e.g., when no tag exists.
     # VERSION: TEST-0.0.0
+    outputs:
+      version: ${{ steps.version.outputs.version }}
     steps:
       - uses: actions/checkout@v3
       - name: Get the release version from the tag
         id: version
         shell: bash
         run: |
+          echo "version is: $GITHUB_REF_NAME"
           echo "version=$GITHUB_REF_NAME" >> $GITHUB_OUTPUT
-          echo "version is: ${{ steps.version.outputs.version }}"
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
