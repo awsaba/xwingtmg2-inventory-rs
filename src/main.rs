@@ -47,7 +47,7 @@ fn parse_args() -> Result<Args, pico_args::Error> {
         collection_json: pargs.opt_value_from_os_str(["-c", "--collection"], parse_path)?,
         format: pargs
             .opt_value_from_str::<_, Format>(["-f", "--format"])?
-            .unwrap_or(Format::Json),
+            .unwrap_or(Format::Xlsx),
     };
 
     // It's up to the caller what to do with the remaining arguments.

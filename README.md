@@ -1,10 +1,24 @@
 # yasb collection to inventory dumper
 
-This is tool that will take your raw [yasb collection](https://login.yasb.app/collection)
-and dump it as comma separated value (CSV) files that can then be processed
-in your favorite spreadsheet program.
+This repository generates an Microsoft® Excel® for Microsoft 365 MSO for keeping
+track of an X-Wing: The Miniature Game 2.0/2.5 colletion.
 
-## Using this tool with a YASB collection
+As a command line interface (CLI), it gives you the ability to take your raw
+[yasb collection](https://login.yasb.app/collection) and dump it to a `json`
+file that can be further processed with something `jq`.
+
+## Using the produced spreadsheet
+
+1. Download the spreadsheet from the `Releases`.
+1. In the `Expansions` sheet, input the number of each expansion you own in the
+   `Owned` column.
+1. In the other sheets, `Ships`, `Pilots`, `Upgrades`, add any loose ships, such
+   as 1.0 models still in your collection to the `Singles` column.
+
+That's it. The `Totals` column will update with your `Singles` and `Expansion`
+counts per-item summed.
+
+## Using CLI with a YASB collection
 
 1. You will need a working `rust` toolchain. Refer to the installation and usage instructions for your platform.
 1. Clone this repo and its submodules: `git submodule init`.
@@ -70,7 +84,9 @@ some tests for anything you are going to add.
 
 ### Adding new expansions
 
-1. Add expansion.
+1. Update the `xwing-data2` submodule to a version that includes the expsnsion
+   contents.
+1. Add expansion to [src/expansions/expansions.json](src/expansions/expansions.json).
 1. TODO
 1. Check if any ships can be removed from the `swzunreleased` placeholder.
 
@@ -78,7 +94,8 @@ some tests for anything you are going to add.
 
 Wave numbers are based on sku, which is *mostly* related to the release date.
 This is in contrast to the [waves in the wiki](https://xwing-miniatures-second-edition.fandom.com/wiki/Products)
-which groups by announcement date and separates some expansions.
+which groups by announcement date and separates some expansions which I think
+are better grouped by theme.
 
 ### Initial `expansions.json`
 
@@ -98,4 +115,4 @@ This also would not be possible with [`xwing-data2`], also under an MIT license.
 Other content fixes are from the [X-Wing Miniatures: Second Edition Wiki](https://xwing-miniatures-second-edition.fandom.com/wiki/X-Wing_Miniatures:_Second_Edition_Wiki),
 community content is covered by CC BY-SA.
 
-[`xwing-data2`](https://github.com/guidokessels/xwing-data2),
+[`xwing-data2`]: https://github.com/guidokessels/xwing-data2

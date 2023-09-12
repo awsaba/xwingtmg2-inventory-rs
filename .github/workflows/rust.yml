@@ -26,3 +26,12 @@ jobs:
 
       - name: Clippy
         run: cargo clippy --verbose
+
+      - name: Generate xlsx
+        run: cargo run
+
+      - name: Upload Generated xlsx
+        uses: actions/upload-artifact@v3
+        with:
+          name: empty-inventory-spreadsheet
+          path: XWingTMG2_Inventory.xlsx
