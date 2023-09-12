@@ -1,4 +1,4 @@
-# yasb collection to inventory dumper
+# X-Wing: The Miniature Game 2.0/2.5 Inventory Management Tools
 
 This repository generates an Microsoft® Excel® for Microsoft 365 MSO for keeping
 track of an X-Wing: The Miniature Game 2.0/2.5 colletion.
@@ -9,7 +9,8 @@ file that can be further processed with something `jq`.
 
 ## Using the produced spreadsheet
 
-1. Download the spreadsheet from the `Releases`.
+1. Download the [latest spreadsheet](https://github.com/awsaba/xwingtmg2-inventory-rs/releases/latest/download/XWingTMG2_Inventory.xlsx)
+   from the `Releases`.
 1. In the `Expansions` sheet, input the number of each expansion you own in the
    `Owned` column.
 1. In the other sheets, `Ships`, `Pilots`, `Upgrades`, add any loose ships, such
