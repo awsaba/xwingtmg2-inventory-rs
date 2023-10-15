@@ -188,12 +188,24 @@ impl UpgradeRecord {
                     .map(|s| format!("{:?}", s.r#type)) //FIXME
                     .unwrap_or("not found".to_owned())
                     .to_owned(),
-                faction_restriction: format_restriction(&u.restrictions, Restriction::Factions),
-                size_restriction: format_restriction(&u.restrictions, Restriction::Sizes),
-                ship_restriction: format_restriction(&u.restrictions, Restriction::Ships),
-                keyword_restriction: format_restriction(&u.restrictions, Restriction::Keywords),
-                force_side_restriction: format_restriction(&u.restrictions, Restriction::ForceSide),
-                arc_restriction: format_restriction(&u.restrictions, Restriction::Arcs),
+                faction_restriction: format_restriction(
+                    data,
+                    &u.restrictions,
+                    Restriction::Factions,
+                ),
+                size_restriction: format_restriction(data, &u.restrictions, Restriction::Sizes),
+                ship_restriction: format_restriction(data, &u.restrictions, Restriction::Ships),
+                keyword_restriction: format_restriction(
+                    data,
+                    &u.restrictions,
+                    Restriction::Keywords,
+                ),
+                force_side_restriction: format_restriction(
+                    data,
+                    &u.restrictions,
+                    Restriction::ForceSide,
+                ),
+                arc_restriction: format_restriction(data, &u.restrictions, Restriction::Arcs),
                 sources: catalog
                     .sources
                     .get(&Item {
@@ -207,23 +219,35 @@ impl UpgradeRecord {
 }
 
 fn format_restriction(
+    data: &xwingdata2::Data,
     restrictions: &Vec<xwingdata2::Restrictions>,
     kind: xwingdata2::Restriction,
 ) -> String {
     // TODO: I'm sure there is more efficient way to append these
-    let mut tmp: Vec<String> = vec![];
+    let mut tmp: Vec<&str> = vec![];
     for r in restrictions {
-        let criteria = match kind {
-            Restriction::Factions => &r.factions,
-            Restriction::Sizes => &r.sizes,
-            Restriction::Ships => &r.ships,
-            Restriction::Arcs => &r.arcs,
-            Restriction::Keywords => &r.keywords,
-            Restriction::ForceSide => &r.force_side,
+        match kind {
+            Restriction::Factions => &r
+                .factions
+                .iter()
+                .map(|xws| {
+                    data.get_faction(xws.as_str())
+                        .map_or(xws.as_str(), |f| f.name.as_str())
+                })
+                .for_each(|v| tmp.push(v)),
+            Restriction::Ships => &r
+                .ships
+                .iter()
+                .map(|xws| {
+                    data.get_ship(xws.as_str())
+                        .map_or(xws.as_str(), |s| s.name.as_str())
+                })
+                .for_each(|v| tmp.push(v)),
+            Restriction::Sizes => &r.sizes.iter().for_each(|v| tmp.push(v)),
+            Restriction::Arcs => &r.arcs.iter().for_each(|v| tmp.push(v)),
+            Restriction::Keywords => &r.keywords.iter().for_each(|v| tmp.push(v)),
+            Restriction::ForceSide => &r.force_side.iter().for_each(|v| tmp.push(v)),
         };
-        if !criteria.is_empty() {
-            tmp.push(criteria.join(","))
-        }
     }
     tmp.join(",")
 }

@@ -9336,7 +9336,7 @@
       {
         "count": 1,
         "type": "pilot",
-        "xws": "bobafett-separatistalliance"
+        "xws": "bobafett-firesprayclasspatrolcraft"
       },
       {
         "count": 1,
@@ -11008,7 +11008,7 @@
       {
         "count": 1,
         "type": "pilot",
-        "xws": "fennrau-rebel-fang"
+        "xws": "fennrau"
       },
       {
         "count": 1,
@@ -11676,7 +11676,12 @@
       {
         "count": 1,
         "type": "pilot",
-        "xws": "dashrendar"
+        "xws": "dashrendar-swz103-rebelalliance"
+      },
+      {
+        "count": 1,
+        "type": "pilot",
+        "xws": "dashrendar-swz103-sl-rebelalliance"
       },
       {
         "count": 1,
@@ -11686,11 +11691,11 @@
       {
         "count": 1,
         "type": "pilot",
-        "xws": "dashrendar-swz103"
+        "xws": "dashrendar"
       },
       {
         "count": 1,
-        "type": "pilot",
+        "type": "upgrade",
         "xws": "leebo-swz103"
       },
       {
