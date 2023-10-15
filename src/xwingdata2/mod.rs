@@ -60,6 +60,8 @@ pub enum XwsKind {
     Upgrade(SlotKind),
     #[serde(alias = "damage")]
     Damage,
+    #[serde(alias = "action")]
+    Action,
 }
 
 /// `XwsId` are the "unique" combination of the item types (roughly the
@@ -95,6 +97,22 @@ impl PartialOrd for dyn XwsId {
 impl PartialEq for dyn XwsId {
     fn eq(&self, other: &Self) -> bool {
         self.xws() == other.xws() && self.kind() == other.kind()
+    }
+}
+
+#[derive(Deserialize, Clone, Debug)]
+pub struct Faction {
+    pub xws: String,
+    pub name: String,
+    // TODO: icon
+}
+
+impl XwsId for Faction {
+    fn xws(&self) -> &str {
+        &self.xws
+    }
+    fn kind(&self) -> XwsKind {
+        XwsKind::Pilot
     }
 }
 
@@ -203,8 +221,24 @@ impl XwsId for Upgrade {
 #[derive(Deserialize, Debug)]
 pub struct Data {
     pub ships: Vec<Ship>,
-    // editor of some sort do the grouping/ordering
     pub upgrades: Vec<Upgrade>,
+    // List of factions loaded from the manifest for looking up a display name
+    // from the xws id used to reference them.
+    pub factions: Vec<Faction>,
+}
+
+fn load_type<T: for<'a> Deserialize<'a>>(root: &Path, paths: &[String]) -> Result<Vec<T>, Error> {
+    let mut result = Vec::new();
+
+    for path in paths {
+        //println!("loading: {}", &faction_path);
+        let path = root.join(path);
+        let buffer = fs::read_to_string(path)?;
+        let mut factions: Vec<T> = serde_json::from_str(&buffer)?;
+        result.append(&mut factions);
+    }
+
+    Ok(result)
 }
 
 impl Data {
@@ -223,18 +257,9 @@ impl Data {
 
         let mut data = Data {
             ships: vec![],
-            upgrades: vec![],
+            upgrades: load_type(path, &manifest.upgrades)?,
+            factions: load_type(path, &manifest.factions)?,
         };
-
-        for upgrade_path in &manifest.upgrades {
-            //println!("loading: {}", &upgrade_path);
-            let path = path.join(upgrade_path);
-            let buffer = fs::read_to_string(path)?;
-            // TODO: the individual fils are pretty straightforward, so choosing
-            // not to create a struct here yet
-            let mut upgrades: Vec<Upgrade> = serde_json::from_str(&buffer)?;
-            data.upgrades.append(&mut upgrades);
-        }
 
         for faction in &manifest.pilots {
             for pilot_path in &faction.ships {
@@ -277,4 +302,5 @@ struct ShipFaction {
 struct Manifest {
     pilots: Vec<ShipFaction>,
     upgrades: Vec<String>,
+    factions: Vec<String>,
 }
