@@ -14,7 +14,7 @@ USAGE:
 
 FLAGS:
   -h, --help            Prints help information
-  -f, --format          JSON or XLSX (default: JSON)
+  -f, --format          json or xlsx (default: xlsx)
   -c, --collection      A YASB collection in YASB's json format
   -o, --only-owned      Includes all known expansions and contents
 ";

@@ -19,7 +19,7 @@ file that can be further processed with something `jq`.
 That's it. The `Totals` column will update with your `Singles` and `Expansion`
 counts per-item summed.
 
-## Using CLI with a YASB collection
+## Using the CLI directly with a YASB collection
 
 1. You will need a working `rust` toolchain. Refer to the installation and usage instructions for your platform.
 1. Clone this repo and its submodules: `git submodule init`.
@@ -29,7 +29,7 @@ counts per-item summed.
 1. Use something like `jq` to turn it into CSV [(from StackOverflow)](https://stackoverflow.com/questions/32960857/how-to-convert-arbitrary-simple-json-to-csv-using-jq):
 
 ```shell
-cargo run
+cargo run -- --format json --collection collection.json
 jq -r '.pilots | (map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' inventory.json > pilots.csv
 jq -r '.upgrades | (map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' inventory.json > upgrades.csv
 jq -r '.ships | (map(keys) | add | unique) as $cols | map(. as $row | $cols | map($row[.])) as $rows | $cols, $rows[] | @csv' inventory.json > ships.csv
