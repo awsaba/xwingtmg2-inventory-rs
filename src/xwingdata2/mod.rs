@@ -291,6 +291,10 @@ impl Data {
     pub fn get_ship(&self, xws: &str) -> Option<&Ship> {
         self.ships.iter().find(|&s| s.xws == xws)
     }
+
+    pub fn get_faction(&self, xws: &str) -> Option<&Faction> {
+        self.factions.iter().find(|&s| s.xws == xws)
+    }
 }
 
 #[derive(Deserialize, Debug)]
