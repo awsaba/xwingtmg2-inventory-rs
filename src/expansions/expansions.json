@@ -11761,27 +11761,27 @@
         "xws": "tiesabomber"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "pilot",
         "xws": "deathfire"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "pilot",
         "xws": "captainjonus"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "pilot",
         "xws": "tomaxbren"
       },
       {
-        "count": 0,
+        "count": 2,
         "type": "pilot",
         "xws": "majorrhymer"
       },
       {
-        "count": 1,
+        "count": 2,
         "type": "pilot",
         "xws": "scimitarsquadronpilot"
       },
@@ -11791,32 +11791,32 @@
         "xws": "gammasquadronace"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "pilot",
         "xws": "deathfire-swz98"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "pilot",
         "xws": "captainjonus-swz98"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "pilot",
         "xws": "tomaxbren-swz98"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "pilot",
         "xws": "majorrhymer-swz98"
       },
       {
-        "count": 1,
+        "count": 2,
         "type": "upgrade",
         "xws": "advprotontorpedoes"
       },
       {
-        "count": 1,
+        "count": 2,
         "type": "upgrade",
         "xws": "protonbombs"
       },
@@ -11826,42 +11826,42 @@
         "xws": "connernets"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "upgrade",
         "xws": "seismiccharges"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "upgrade",
         "xws": "clustermissiles"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "upgrade",
         "xws": "saturationsalvo"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "upgrade",
         "xws": "ionmissiles"
       },
       {
-        "count": 0,
+        "count": 1,
         "type": "upgrade",
         "xws": "skilledbombardier"
       },
       {
-        "count": 1,
+        "count": 2,
         "type": "upgrade",
         "xws": "ionbombs"
       },
       {
-        "count": 1,
+        "count": 2,
         "type": "upgrade",
         "xws": "feedbackping"
       },
       {
-        "count": 1,
+        "count": 2,
         "type": "upgrade",
         "xws": "disciplined"
       }
