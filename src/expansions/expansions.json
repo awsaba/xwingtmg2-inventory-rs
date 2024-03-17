@@ -12245,6 +12245,113 @@
     "wave": 15
   },
   {
+    "name": "Battle Over Endor Battle Pack",
+    "sku": "swz99",
+    "wave": 16,
+    "contents": [
+      {
+        "xws": "arvelcrynyd-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "gemmersojan-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "tychocelchu-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "adonfox-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "braylenstramm-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "ginamoonsong-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "kendyidele-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "wedgeantilles-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "yendor-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "landocalrissian-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "captainyorr-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "coloneljendon-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "mausmonare-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "sapphire2-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "soontirfel-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "lieutenanthebsly-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "majormianda-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "scythe6-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "scimitar1-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      },
+      {
+        "xws": "scimitar3-battleoverendor",
+        "type": "pilot",
+        "count": 1
+      }
+    ]
+  },
+  {
     "contents": [
       {
         "count": 1,
