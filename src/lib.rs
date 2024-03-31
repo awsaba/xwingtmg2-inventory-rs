@@ -431,11 +431,13 @@ fn add_ships_sheet(
     Ok(())
 }
 
-const PILOT_COLS: [&str; 8] = [
-    "Name",
+const PILOT_COLS: [&str; 10] = [
     "Ship",
+    "Name",
     "Initiative",
+    "Caption",
     "Faction",
+    "Standard Loadout",
     "Total",
     "Singles",
     "XWS",
@@ -454,7 +456,7 @@ fn add_pilots_sheet(
     }
 
     let mut pilot_row = 1;
-    let pilot_singles_col = 5;
+    let pilot_singles_col = 7;
     for item in inventory.keys() {
         if item.r#type == ItemType::Pilot {
             // TODO: probably don't need to
@@ -466,24 +468,37 @@ fn add_pilots_sheet(
                 }
             };
 
-            pilots.write(pilot_row, 0, &pilot.name)?;
-            pilots.write(pilot_row, 1, &ship.name)?;
+            pilots.write(pilot_row, 0, &ship.name)?;
+            pilots.write(pilot_row, 1, &pilot.name)?;
             pilots.write(pilot_row, 2, pilot.initiative)?;
-            pilots.write(pilot_row, 3, &ship.faction)?;
+            pilots.write(
+                pilot_row,
+                3,
+                pilot.caption.as_ref().map_or_else(|| "", |c| c.as_str()),
+            )?;
+            pilots.write(pilot_row, 4, &ship.faction)?;
+            pilots.write(
+                pilot_row,
+                5,
+                pilot
+                    .standard_loadout
+                    .as_ref()
+                    .map_or_else(|| false, |v| !v.is_empty()),
+            )?;
             pilots.write_dynamic_formula(
                 pilot_row,
-                4,
+                6,
                 total_func(item, row_col_to_cell(pilot_row, pilot_singles_col), catalog).as_str(),
             )?;
             pilots.write(
                 pilot_row,
-                5,
+                7,
                 *collection.singles.get(item).unwrap_or(&0) as i32,
             )?;
-            pilots.write(pilot_row, 6, &pilot.xws)?;
+            pilots.write(pilot_row, 8, &pilot.xws)?;
             pilots.write(
                 pilot_row,
-                7,
+                9,
                 catalog
                     .sources
                     .get(item)

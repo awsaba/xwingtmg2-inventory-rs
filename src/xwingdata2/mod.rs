@@ -126,8 +126,11 @@ pub fn known_missing(xws: &str) -> bool {
 #[derive(Deserialize, Clone, Debug)]
 pub struct Pilot {
     pub name: String,
+    pub caption: Option<String>,
     pub xws: String,
     pub initiative: u32,
+    #[serde(alias = "standardLoadout")]
+    pub standard_loadout: Option<Vec<String>>,
 }
 
 impl XwsId for Pilot {
