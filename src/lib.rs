@@ -19,7 +19,7 @@ use serde::{Deserialize, Serialize};
 use xwingdata2::Data;
 
 use rust_xlsxwriter::utility::row_col_to_cell;
-use rust_xlsxwriter::{Table, TableStyle, Workbook, XlsxError};
+use rust_xlsxwriter::{Table, TableColumn, TableFunction, TableStyle, Workbook, XlsxError};
 
 use std::collections::BTreeMap;
 
@@ -431,16 +431,6 @@ fn add_ships_sheet(
     Ok(())
 }
 
-const PILOT_COLS: [&str; 8] = [
-    "Name",
-    "Ship",
-    "Initiative",
-    "Faction",
-    "Total",
-    "Singles",
-    "XWS",
-    "Sources",
-];
 fn add_pilots_sheet(
     workbook: &mut Workbook,
     catalog: &Catalog,
@@ -449,12 +439,9 @@ fn add_pilots_sheet(
     inventory: &BTreeMap<Item, u32>,
 ) -> Result<(), XlsxError> {
     let pilots = workbook.add_worksheet().set_name("Pilots")?;
-    for (i, col) in PILOT_COLS.iter().enumerate() {
-        pilots.write(0, i as u16, *col)?;
-    }
 
     let mut pilot_row = 1;
-    let pilot_singles_col = 5;
+    let pilot_singles_col = 7;
     for item in inventory.keys() {
         if item.r#type == ItemType::Pilot {
             // TODO: probably don't need to
@@ -466,24 +453,37 @@ fn add_pilots_sheet(
                 }
             };
 
-            pilots.write(pilot_row, 0, &pilot.name)?;
-            pilots.write(pilot_row, 1, &ship.name)?;
+            pilots.write(pilot_row, 0, &ship.name)?;
+            pilots.write(pilot_row, 1, &pilot.name)?;
             pilots.write(pilot_row, 2, pilot.initiative)?;
-            pilots.write(pilot_row, 3, &ship.faction)?;
+            pilots.write(
+                pilot_row,
+                3,
+                pilot.caption.as_ref().map_or_else(|| "", |c| c.as_str()),
+            )?;
+            pilots.write(pilot_row, 4, &ship.faction)?;
+            pilots.write(
+                pilot_row,
+                5,
+                pilot
+                    .standard_loadout
+                    .as_ref()
+                    .map_or_else(|| false, |v| !v.is_empty()),
+            )?;
             pilots.write_dynamic_formula(
                 pilot_row,
-                4,
+                6,
                 total_func(item, row_col_to_cell(pilot_row, pilot_singles_col), catalog).as_str(),
             )?;
             pilots.write(
                 pilot_row,
-                5,
+                7,
                 *collection.singles.get(item).unwrap_or(&0) as i32,
             )?;
-            pilots.write(pilot_row, 6, &pilot.xws)?;
+            pilots.write(pilot_row, 8, &pilot.xws)?;
             pilots.write(
                 pilot_row,
-                7,
+                9,
                 catalog
                     .sources
                     .get(item)
@@ -497,25 +497,28 @@ fn add_pilots_sheet(
     let mut table = Table::new();
     table.set_name("pilotTable");
     table.set_style(TableStyle::Medium4);
-    pilots.add_table(0, 0, pilot_row - 1, PILOT_COLS.len() as u16 - 1, &table)?;
+    table.set_total_row(true);
+    let columns = vec![
+        TableColumn::new()
+            .set_header("Ship")
+            .set_total_label("Total"),
+        TableColumn::new().set_header("Name"),
+        TableColumn::new().set_header("Initiative"),
+        TableColumn::new().set_header("Caption"),
+        TableColumn::new().set_header("Faction"),
+        TableColumn::new().set_header("Standard Loadout"),
+        TableColumn::new()
+            .set_header("Total")
+            .set_total_function(TableFunction::Sum),
+        TableColumn::new().set_header("Singles"),
+        TableColumn::new().set_header("XWS"),
+        TableColumn::new().set_header("Sources"),
+    ];
+    table.set_columns(&columns);
+    pilots.add_table(0, 0, pilot_row, columns.len() as u16 - 1, &table)?;
     pilots.autofit();
     Ok(())
 }
-
-const UPGRADE_COLS: [&str; 12] = [
-    "Name",
-    "Type",
-    "Faction Restriction",
-    "Ship Restriction",
-    "Size Restriction",
-    "Arc Restriction",
-    "Force Side Restriction",
-    "Keyword Restriction",
-    "Total",
-    "Singles",
-    "XWS",
-    "Sources",
-];
 
 fn add_upgrades_sheet(
     workbook: &mut Workbook,
@@ -525,9 +528,6 @@ fn add_upgrades_sheet(
     inventory: &BTreeMap<Item, u32>,
 ) -> Result<(), XlsxError> {
     let upgrades = workbook.add_worksheet().set_name("Upgrades")?;
-    for (i, col) in UPGRADE_COLS.iter().enumerate() {
-        upgrades.write(0, i as u16, *col)?;
-    }
 
     let mut upgrade_row = 1;
     let upgrade_singles_col = 9;
@@ -585,7 +585,28 @@ fn add_upgrades_sheet(
     let mut table = Table::new();
     table.set_name("upgradeTable");
     table.set_style(TableStyle::Medium5);
-    upgrades.add_table(0, 0, upgrade_row - 1, UPGRADE_COLS.len() as u16 - 1, &table)?;
+    table.set_total_row(true);
+    let columns = vec![
+        TableColumn::new()
+            .set_header("Name")
+            .set_total_label("Total"),
+        TableColumn::new().set_header("Type"),
+        TableColumn::new().set_header("Faction Restriction"),
+        TableColumn::new().set_header("Ship Restriction"),
+        TableColumn::new().set_header("Size Restriction"),
+        TableColumn::new().set_header("Arc Restriction"),
+        TableColumn::new().set_header("Force Side Restriction"),
+        TableColumn::new().set_header("Keyword Restriction"),
+        TableColumn::new()
+            .set_header("Total")
+            .set_total_function(TableFunction::Sum),
+        TableColumn::new().set_header("Singles"),
+        TableColumn::new().set_header("XWS"),
+        TableColumn::new().set_header("Sources"),
+    ];
+    table.set_columns(&columns);
+
+    upgrades.add_table(0, 0, upgrade_row, columns.len() as u16 - 1, &table)?;
     upgrades.autofit();
     Ok(())
 }

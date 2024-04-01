@@ -142,12 +142,12 @@ fn main() {
         records.ships.len(),
     );
     println!(
-        "Total {} pilots, {}/{} unique",
+        "Total {} cards, {}/{} unique",
         records.pilots.iter().fold(0, |acc, r| acc + r.count),
         records
             .pilots
             .iter()
-            .fold(0, |acc, r| if r.count > 0 { acc + 1 } else { acc }),
+            .fold(0, |acc, r| if r.count == 1 { acc + 1 } else { acc }),
         records.pilots.len(),
     );
     println!(
