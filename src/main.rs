@@ -16,7 +16,7 @@ FLAGS:
   -h, --help            Prints help information
   -f, --format          json or xlsx (default: xlsx)
   -c, --collection      A YASB collection in YASB's json format
-  -o, --only-owned      Includes all known expansions and contents
+  -o, --only-owned      Don't include unowned expansions and contents
 ";
 
 #[derive(PartialEq, EnumString)]
@@ -169,7 +169,13 @@ fn main() {
             }
         }
         Format::Xlsx => {
-            match xwingtmg2_inventory_rs::generate_xls(&catalog, &data, &collection, &inventory) {
+            match xwingtmg2_inventory_rs::generate_xls(
+                &catalog,
+                &data,
+                &collection,
+                &inventory,
+                args.only_owned,
+            ) {
                 Ok(_) => println!("xlsx written"),
                 Err(err) => println!("xlsx error: {}", err),
             }

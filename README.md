@@ -1,7 +1,7 @@
 # X-Wing: The Miniature Game 2.0/2.5 Inventory Management Tools
 
 This repository generates an Microsoft® Excel® for Microsoft 365 MSO for keeping
-track of an X-Wing: The Miniature Game 2.0/2.5 colletion.
+track of an X-Wing: The Miniature Game 2.0/2.5 collection.
 
 As a command line interface (CLI), it gives you the ability to take your raw
 [yasb collection](https://login.yasb.app/collection) and dump it to a `json`
@@ -76,6 +76,15 @@ Why rust?
   > [System.Console]::OutputEncoding=[System.Text.Encoding]::UTF8
   ```
 
+## Known Issues
+
+* YASB Collection Quirks
+  * If you used YASP pre-2.0, your 1.0 expansions are still there, but of
+    won't be in YASB, except for the core sets and the ships that came with
+    obstacles, so they will print out as warning.
+  * "First Edition VT-49 Decimator": Records appear to have been removed when the VT-49 was
+    reprinted, so can't be imported like the other 1.0 obstacle sets.
+
 ## Contributing to the this repo
 
 Have a look at the issues.
@@ -85,7 +94,7 @@ some tests for anything you are going to add.
 
 ### Adding new expansions
 
-1. Update the `xwing-data2` submodule to a version that includes the expsnsion
+1. Update the `xwing-data2` submodule to a version that includes the expansion
    contents.
 1. Add expansion to [src/expansions/expansions.json](src/expansions/expansions.json).
 1. TODO

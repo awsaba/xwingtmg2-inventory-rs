@@ -42,7 +42,7 @@
         "xws": "coreasteroid5"
       }
     ],
-    "name": "First Edition Core Set",
+    "name": "Core",
     "sku": "swx01",
     "wave": 0
   },
@@ -69,7 +69,7 @@
         "xws": "yt2400debris2"
       }
     ],
-    "name": "First Edition YT-2400 Freighter Expansion Pack",
+    "name": "YT-2400 Freighter Expansion Pack",
     "sku": "swx23",
     "wave": 0
   },
@@ -143,7 +143,7 @@
         "xws": "core2asteroid5"
       }
     ],
-    "name": "First Edition Force Awakens Core Set",
+    "name": "The Force Awakens Core Set",
     "sku": "swx36",
     "wave": 0
   },
