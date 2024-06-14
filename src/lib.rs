@@ -14,13 +14,14 @@ pub mod expansions;
 pub mod xwingdata2;
 pub mod yasb2;
 
-use expansions::{Catalog, Expansion, ItemCount, ItemType, SKU};
+use expansions::{Catalog, ItemCount, ItemType, SKU};
 use serde::{Deserialize, Serialize};
 use xwingdata2::Data;
 
 use rust_xlsxwriter::utility::row_col_to_cell;
 use rust_xlsxwriter::{Table, TableColumn, TableFunction, TableStyle, Workbook, XlsxError};
 
+use std::cmp::Ordering;
 use std::collections::BTreeMap;
 
 #[derive(Debug)]
@@ -310,10 +311,11 @@ pub fn generate_xls(
     data: &Data,
     collection: &Collection,
     inventory: &Inventory,
+    only_owned: bool,
 ) -> Result<(), XlsxError> {
     let mut workbook = Workbook::new();
 
-    add_expansion_sheet(&mut workbook, catalog, collection)?;
+    add_expansion_sheet(&mut workbook, catalog, collection, only_owned)?;
     // This must be done seperately because of the way borrows work on the
     // workbook make it hard to work with more than 1 sheet at once.
     add_ships_sheet(&mut workbook, catalog, data, collection, inventory)?;
@@ -331,21 +333,25 @@ fn add_expansion_sheet(
     workbook: &mut Workbook,
     catalog: &Catalog,
     collection: &Collection,
+    only_owned: bool,
 ) -> Result<(), XlsxError> {
     let worksheet = workbook.add_worksheet().set_name("Expansions")?;
     for (i, col) in EXPANSION_COLS.iter().enumerate() {
         worksheet.write(0, i as u16, *col)?;
     }
-    let unknown = Expansion {
-        sku: "error".to_string(),
-        name: "notfound".to_string(),
-        wave: 0,
-        contents: vec![],
-    };
     let mut row = 1;
-    for (e, c) in &collection.skus {
-        let exp = catalog.expansions.get(e).unwrap_or(&unknown);
-        worksheet.write(row, 0, *c)?;
+    let mut sorted_expansions = catalog.expansions.values().collect::<Vec<_>>();
+    sorted_expansions.sort_by(|a, b| match (a.wave.cmp(&b.wave), a.sku.cmp(&b.sku)) {
+        (Ordering::Less, _) => Ordering::Less,
+        (Ordering::Greater, _) => Ordering::Greater,
+        (_, x) => x,
+    });
+    for exp in sorted_expansions {
+        let c = *collection.skus.get(&exp.sku).unwrap_or(&0);
+        if c == 0 && only_owned {
+            continue;
+        }
+        worksheet.write(row, 0, c)?;
         worksheet.write(row, 1, &exp.name)?;
         worksheet.write(row, 2, exp.wave)?;
         worksheet.write(row, 3, &exp.sku)?;
