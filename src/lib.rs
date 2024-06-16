@@ -241,10 +241,7 @@ fn format_restriction(
             Restriction::Ships => &r
                 .ships
                 .iter()
-                .map(|xws| {
-                    data.get_ship(xws.as_str())
-                        .map_or(xws.as_str(), |s| s.name.as_str())
-                })
+                .map(|xws| data.get_ship_name(xws.as_str()).unwrap_or(xws.as_str()))
                 .for_each(|v| tmp.push(v)),
             Restriction::Sizes => &r.sizes.iter().for_each(|v| tmp.push(v)),
             Restriction::Arcs => &r.arcs.iter().for_each(|v| tmp.push(v)),
@@ -394,7 +391,7 @@ fn add_ships_sheet(
     let ship_singles_col = 2;
     for item in inventory.keys() {
         if item.r#type == ItemType::Ship {
-            let model = match data.get_ship(&item.xws) {
+            let name = match data.get_ship_name(&item.xws) {
                 Some(m) => m,
                 None => {
                     println!("xslx: missing ship {}", item.xws);
@@ -402,7 +399,7 @@ fn add_ships_sheet(
                 }
             };
 
-            ships.write(ship_row, 0, &model.name)?;
+            ships.write(ship_row, 0, name)?;
             ships.write_dynamic_formula(
                 ship_row,
                 1,
@@ -413,7 +410,7 @@ fn add_ships_sheet(
                 2,
                 *collection.singles.get(item).unwrap_or(&0) as i32,
             )?;
-            ships.write(ship_row, 3, &model.xws)?;
+            ships.write(ship_row, 3, &item.xws)?;
             ships.write(
                 ship_row,
                 4,

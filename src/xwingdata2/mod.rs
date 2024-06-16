@@ -290,6 +290,14 @@ impl Data {
         self.upgrades.iter().find(|&u| u.xws == xws)
     }
 
+    /// Return the name of the first ship matching the given xws.
+    pub fn get_ship_name(&self, xws: &str) -> Option<&str> {
+        self.ships
+            .iter()
+            .find(|&s| s.xws == xws)
+            .map(|s| s.name.as_str())
+    }
+
     pub fn get_ship(&self, xws: &str) -> Option<&Ship> {
         self.ships.iter().find(|&s| s.xws == xws)
     }
