@@ -234,7 +234,6 @@ fn load_type<T: for<'a> Deserialize<'a>>(root: &Path, paths: &[String]) -> Resul
     let mut result = Vec::new();
 
     for path in paths {
-        //println!("loading: {}", &faction_path);
         let path = root.join(path);
         let buffer = fs::read_to_string(path)?;
         let mut factions: Vec<T> = serde_json::from_str(&buffer)?;
@@ -296,7 +295,7 @@ impl Data {
     }
 
     pub fn get_faction(&self, xws: &str) -> Option<&Faction> {
-        self.factions.iter().find(|&s| s.xws == xws)
+        self.factions.iter().find(|&f| f.xws == xws)
     }
 }
 

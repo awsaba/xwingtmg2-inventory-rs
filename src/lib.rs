@@ -135,7 +135,9 @@ impl PilotRecord {
         match data.get_pilot(xws) {
             None => Err(ErrorKind::NotFound),
             Some((s, p)) => Ok(Self {
-                faction: s.faction.to_owned(),
+                faction: data
+                    .get_faction(s.faction.as_str())
+                    .map_or(s.faction.to_owned(), |f| f.name.to_owned()),
                 ship: s.name.to_owned(),
                 name: p.name.to_owned(),
                 xws: p.xws.to_owned(),
@@ -492,7 +494,12 @@ fn add_pilots_sheet(
                 *collection.singles.get(item).unwrap_or(&0) as i32,
             )?;
 
-            pilots.write(pilot_row, 5, &ship.faction)?;
+            pilots.write(
+                pilot_row,
+                5,
+                data.get_faction(ship.faction.as_str())
+                    .map_or(ship.faction.to_owned(), |f| f.name.to_owned()),
+            )?;
             pilots.write(pilot_row, 6, pilot.initiative)?;
             pilots.write(
                 pilot_row,
