@@ -379,7 +379,6 @@ fn total_func(item: &Item, singles_cell: String, catalog: &Catalog) -> String {
     func
 }
 
-const SHIP_COLS: [&str; 5] = ["Name", "Total", "Singles", "XWS", "Sources"];
 fn add_ships_sheet(
     workbook: &mut Workbook,
     catalog: &Catalog,
@@ -388,9 +387,6 @@ fn add_ships_sheet(
     inventory: &BTreeMap<Item, u32>,
 ) -> Result<(), XlsxError> {
     let ships = workbook.add_worksheet().set_name("Ships")?;
-    for (i, col) in SHIP_COLS.iter().enumerate() {
-        ships.write(0, i as u16, *col)?;
-    }
 
     let mut ship_row = 1;
     let ship_singles_col = 2;
@@ -429,10 +425,28 @@ fn add_ships_sheet(
             ship_row += 1;
         }
     }
+    let columns = vec![
+        TableColumn::new()
+            .set_header("Name")
+            .set_total_label("Totals"),
+        TableColumn::new()
+            .set_header("Total")
+            .set_total_function(TableFunction::Sum),
+        TableColumn::new()
+            .set_header("Singles")
+            .set_total_function(TableFunction::Sum),
+        TableColumn::new()
+            .set_header("XWS")
+            .set_total_function(TableFunction::Count),
+        TableColumn::new().set_header("Sources"),
+    ];
     let mut table = Table::new();
-    table.set_name("ShipTable");
-    table.set_style(TableStyle::Medium3);
-    ships.add_table(0, 0, ship_row - 1, SHIP_COLS.len() as u16 - 1, &table)?;
+    let table = table
+        .set_name("ShipTable")
+        .set_style(TableStyle::Medium3)
+        .set_columns(&columns)
+        .set_total_row(true);
+    ships.add_table(0, 0, ship_row, columns.len() as u16 - 1, &table)?;
     ships.autofit();
     Ok(())
 }
@@ -447,7 +461,7 @@ fn add_pilots_sheet(
     let pilots = workbook.add_worksheet().set_name("Pilots")?;
 
     let mut pilot_row = 1;
-    let pilot_singles_col = 7;
+    let pilot_singles_col = 4;
     for item in inventory.keys() {
         if item.r#type == ItemType::Pilot {
             // TODO: probably don't need to
@@ -459,33 +473,36 @@ fn add_pilots_sheet(
                 }
             };
 
-            pilots.write(pilot_row, 0, &ship.name)?;
-            pilots.write(pilot_row, 1, &pilot.name)?;
-            pilots.write(pilot_row, 2, pilot.initiative)?;
+            pilots.write(pilot_row, 0, &pilot.name)?;
+            pilots.write(pilot_row, 1, &ship.name)?;
             pilots.write(
                 pilot_row,
-                3,
+                2,
                 pilot.caption.as_ref().map_or_else(|| "", |c| c.as_str()),
             )?;
-            pilots.write(pilot_row, 4, &ship.faction)?;
+
+            pilots.write_dynamic_formula(
+                pilot_row,
+                3,
+                total_func(item, row_col_to_cell(pilot_row, pilot_singles_col), catalog).as_str(),
+            )?;
             pilots.write(
                 pilot_row,
-                5,
+                4,
+                *collection.singles.get(item).unwrap_or(&0) as i32,
+            )?;
+
+            pilots.write(pilot_row, 5, &ship.faction)?;
+            pilots.write(pilot_row, 6, pilot.initiative)?;
+            pilots.write(
+                pilot_row,
+                7,
                 pilot
                     .standard_loadout
                     .as_ref()
                     .map_or_else(|| false, |v| !v.is_empty()),
             )?;
-            pilots.write_dynamic_formula(
-                pilot_row,
-                6,
-                total_func(item, row_col_to_cell(pilot_row, pilot_singles_col), catalog).as_str(),
-            )?;
-            pilots.write(
-                pilot_row,
-                7,
-                *collection.singles.get(item).unwrap_or(&0) as i32,
-            )?;
+
             pilots.write(pilot_row, 8, &pilot.xws)?;
             pilots.write(
                 pilot_row,
@@ -500,27 +517,32 @@ fn add_pilots_sheet(
             pilot_row += 1;
         }
     }
-    let mut table = Table::new();
-    table.set_name("pilotTable");
-    table.set_style(TableStyle::Medium4);
-    table.set_total_row(true);
     let columns = vec![
         TableColumn::new()
-            .set_header("Ship")
-            .set_total_label("Total"),
-        TableColumn::new().set_header("Name"),
-        TableColumn::new().set_header("Initiative"),
+            .set_header("Name")
+            .set_total_label("Totals"),
+        TableColumn::new().set_header("Ship"),
         TableColumn::new().set_header("Caption"),
-        TableColumn::new().set_header("Faction"),
-        TableColumn::new().set_header("Standard Loadout"),
         TableColumn::new()
             .set_header("Total")
             .set_total_function(TableFunction::Sum),
-        TableColumn::new().set_header("Singles"),
-        TableColumn::new().set_header("XWS"),
+        TableColumn::new()
+            .set_header("Singles")
+            .set_total_function(TableFunction::Sum),
+        TableColumn::new().set_header("Faction"),
+        TableColumn::new().set_header("Initiative"),
+        TableColumn::new().set_header("Standard Loadout"),
+        TableColumn::new()
+            .set_header("XWS")
+            .set_total_function(TableFunction::Count),
         TableColumn::new().set_header("Sources"),
     ];
-    table.set_columns(&columns);
+    let mut table = Table::new();
+    let table = table
+        .set_name("pilotTable")
+        .set_style(TableStyle::Medium4)
+        .set_columns(&columns)
+        .set_total_row(true);
     pilots.add_table(0, 0, pilot_row, columns.len() as u16 - 1, &table)?;
     pilots.autofit();
     Ok(())
@@ -536,7 +558,7 @@ fn add_upgrades_sheet(
     let upgrades = workbook.add_worksheet().set_name("Upgrades")?;
 
     let mut upgrade_row = 1;
-    let upgrade_singles_col = 9;
+    let upgrade_singles_col = 3;
     for item in inventory.keys() {
         if item.r#type == ItemType::Upgrade {
             let upgrade = match data.get_upgrade(&item.xws) {
@@ -552,16 +574,9 @@ fn add_upgrades_sheet(
             upgrades.write(upgrade_row, 0, &upgrade.name)?;
             upgrades.write(upgrade_row, 1, &record.r#type)?;
 
-            upgrades.write(upgrade_row, 2, &record.faction_restriction)?;
-            upgrades.write(upgrade_row, 3, &record.ship_restriction)?;
-            upgrades.write(upgrade_row, 4, &record.size_restriction)?;
-            upgrades.write(upgrade_row, 5, &record.arc_restriction)?;
-            upgrades.write(upgrade_row, 6, &record.force_side_restriction)?;
-            upgrades.write(upgrade_row, 7, &record.keyword_restriction)?;
-
             upgrades.write_dynamic_formula(
                 upgrade_row,
-                8,
+                2,
                 total_func(
                     item,
                     row_col_to_cell(upgrade_row, upgrade_singles_col),
@@ -571,9 +586,17 @@ fn add_upgrades_sheet(
             )?;
             upgrades.write(
                 upgrade_row,
-                9,
+                upgrade_singles_col,
                 *collection.singles.get(item).unwrap_or(&0) as i32,
             )?;
+
+            upgrades.write(upgrade_row, 4, &record.faction_restriction)?;
+            upgrades.write(upgrade_row, 5, &record.ship_restriction)?;
+            upgrades.write(upgrade_row, 6, &record.size_restriction)?;
+            upgrades.write(upgrade_row, 7, &record.arc_restriction)?;
+            upgrades.write(upgrade_row, 8, &record.force_side_restriction)?;
+            upgrades.write(upgrade_row, 9, &record.keyword_restriction)?;
+
             upgrades.write(upgrade_row, 10, &upgrade.xws)?;
             upgrades.write(
                 upgrade_row,
@@ -595,8 +618,14 @@ fn add_upgrades_sheet(
     let columns = vec![
         TableColumn::new()
             .set_header("Name")
-            .set_total_label("Total"),
+            .set_total_label("Totals"),
         TableColumn::new().set_header("Type"),
+        TableColumn::new()
+            .set_header("Total")
+            .set_total_function(TableFunction::Sum),
+        TableColumn::new()
+            .set_header("Singles")
+            .set_total_function(TableFunction::Sum),
         TableColumn::new().set_header("Faction Restriction"),
         TableColumn::new().set_header("Ship Restriction"),
         TableColumn::new().set_header("Size Restriction"),
@@ -604,10 +633,8 @@ fn add_upgrades_sheet(
         TableColumn::new().set_header("Force Side Restriction"),
         TableColumn::new().set_header("Keyword Restriction"),
         TableColumn::new()
-            .set_header("Total")
-            .set_total_function(TableFunction::Sum),
-        TableColumn::new().set_header("Singles"),
-        TableColumn::new().set_header("XWS"),
+            .set_header("XWS")
+            .set_total_function(TableFunction::Count),
         TableColumn::new().set_header("Sources"),
     ];
     table.set_columns(&columns);
