@@ -201,7 +201,7 @@ mod test {
                     continue;
                 }
                 let result = match item_count.item.r#type {
-                    ItemType::Ship => d.get_ship(&item_count.item.xws).is_some(),
+                    ItemType::Ship => d.get_ship_model(&item_count.item.xws).is_some(),
                     ItemType::Pilot => d.get_pilot(&item_count.item.xws).is_some(),
                     ItemType::Upgrade => d.get_upgrade(&item_count.item.xws).is_some(),
                     _ => continue,

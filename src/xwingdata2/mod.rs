@@ -234,7 +234,6 @@ fn load_type<T: for<'a> Deserialize<'a>>(root: &Path, paths: &[String]) -> Resul
     let mut result = Vec::new();
 
     for path in paths {
-        //println!("loading: {}", &faction_path);
         let path = root.join(path);
         let buffer = fs::read_to_string(path)?;
         let mut factions: Vec<T> = serde_json::from_str(&buffer)?;
@@ -291,12 +290,56 @@ impl Data {
         self.upgrades.iter().find(|&u| u.xws == xws)
     }
 
-    pub fn get_ship(&self, xws: &str) -> Option<&Ship> {
-        self.ships.iter().find(|&s| s.xws == xws)
+    /// Return the name of the first ship matching the given xws.
+    pub fn get_ship_name(&self, xws: &str) -> Option<&str> {
+        self.ships
+            .iter()
+            .find(|&s| s.xws == xws)
+            .map(|s| s.name.as_str())
+    }
+
+    /// Returns a combined copy of just the model info, with factions joined
+    /// into a single string. The models share the same xws ID, but are
+    /// listed multiple times across factions for some ships
+    pub fn get_ship_model(&self, xws: &str) -> Option<Ship> {
+        match self
+            .ships
+            .iter()
+            .filter(|s| s.xws == xws)
+            .collect::<Vec<&Ship>>()
+            .as_slice()
+        {
+            [] => None,
+            [s] => Some(Ship {
+                name: s.name.clone(),
+                xws: s.name.clone(),
+                faction: self
+                    .factions
+                    .iter()
+                    .find(|f| f.xws == s.faction)
+                    .map_or(s.faction.clone(), |f| f.name.clone()),
+                pilots: vec![],
+            }),
+            s => Some(Ship {
+                name: s[0].name.clone(),
+                xws: s[0].xws.clone(),
+                faction: s
+                    .iter()
+                    .map(|s| {
+                        self.factions
+                            .iter()
+                            .find(|f| f.xws == s.faction)
+                            .map_or(s.faction.as_str(), |f| f.name.as_str())
+                    })
+                    .collect::<Vec<&str>>()
+                    .join(","),
+                pilots: vec![],
+            }),
+        }
     }
 
     pub fn get_faction(&self, xws: &str) -> Option<&Faction> {
-        self.factions.iter().find(|&s| s.xws == xws)
+        self.factions.iter().find(|&f| f.xws == xws)
     }
 }
 
