@@ -78,6 +78,7 @@ impl Collection {
 pub struct ShipRecord {
     pub name: String,
     pub xws: String,
+    pub factions: String,
 
     pub count: u32,
 
@@ -89,11 +90,12 @@ pub struct ShipRecord {
 impl ShipRecord {
     /// Turns skus and xws id's into display names.
     pub fn build(xws: &str, count: u32, data: &Data, catalog: &Catalog) -> Result<Self, ErrorKind> {
-        match data.get_ship(xws) {
+        match data.get_ship_model(xws) {
             None => Err(ErrorKind::NotFound),
             Some(s) => Ok(Self {
-                name: s.name.to_owned(),
-                xws: s.xws.to_owned(),
+                name: s.name,
+                xws: s.xws,
+                factions: s.faction,
                 sources: catalog
                     .sources
                     .get(&Item {
@@ -391,7 +393,7 @@ fn add_ships_sheet(
     let ship_singles_col = 2;
     for item in inventory.keys() {
         if item.r#type == ItemType::Ship {
-            let name = match data.get_ship_name(&item.xws) {
+            let model = match data.get_ship_model(&item.xws) {
                 Some(m) => m,
                 None => {
                     println!("xslx: missing ship {}", item.xws);
@@ -399,7 +401,7 @@ fn add_ships_sheet(
                 }
             };
 
-            ships.write(ship_row, 0, name)?;
+            ships.write(ship_row, 0, &model.name)?;
             ships.write_dynamic_formula(
                 ship_row,
                 1,
@@ -410,10 +412,11 @@ fn add_ships_sheet(
                 2,
                 *collection.singles.get(item).unwrap_or(&0) as i32,
             )?;
-            ships.write(ship_row, 3, &item.xws)?;
+            ships.write(ship_row, 3, &model.faction)?;
+            ships.write(ship_row, 4, &item.xws)?;
             ships.write(
                 ship_row,
-                4,
+                5,
                 catalog
                     .sources
                     .get(item)
@@ -434,6 +437,7 @@ fn add_ships_sheet(
         TableColumn::new()
             .set_header("Singles")
             .set_total_function(TableFunction::Sum),
+        TableColumn::new().set_header("Factions"),
         TableColumn::new()
             .set_header("XWS")
             .set_total_function(TableFunction::Count),

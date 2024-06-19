@@ -298,8 +298,44 @@ impl Data {
             .map(|s| s.name.as_str())
     }
 
-    pub fn get_ship(&self, xws: &str) -> Option<&Ship> {
-        self.ships.iter().find(|&s| s.xws == xws)
+    /// Returns a combined copy of just the model info, with factions joined
+    /// into a single string. The models share the same xws ID, but are
+    /// listed multiple times across factions for some ships
+    pub fn get_ship_model(&self, xws: &str) -> Option<Ship> {
+        match self
+            .ships
+            .iter()
+            .filter(|s| s.xws == xws)
+            .collect::<Vec<&Ship>>()
+            .as_slice()
+        {
+            [] => None,
+            [s] => Some(Ship {
+                name: s.name.clone(),
+                xws: s.name.clone(),
+                faction: self
+                    .factions
+                    .iter()
+                    .find(|f| f.xws == s.faction)
+                    .map_or(s.faction.clone(), |f| f.name.clone()),
+                pilots: vec![],
+            }),
+            s => Some(Ship {
+                name: s[0].name.clone(),
+                xws: s[0].xws.clone(),
+                faction: s
+                    .iter()
+                    .map(|s| {
+                        self.factions
+                            .iter()
+                            .find(|f| f.xws == s.faction)
+                            .map_or(s.faction.as_str(), |f| f.name.as_str())
+                    })
+                    .collect::<Vec<&str>>()
+                    .join(","),
+                pilots: vec![],
+            }),
+        }
     }
 
     pub fn get_faction(&self, xws: &str) -> Option<&Faction> {
