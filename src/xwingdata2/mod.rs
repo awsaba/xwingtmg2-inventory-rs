@@ -147,6 +147,7 @@ pub struct Ship {
     pub name: String,
     pub xws: String,
     pub faction: String,
+    pub size: String,
     pub pilots: Vec<Pilot>,
 }
 
@@ -313,6 +314,7 @@ impl Data {
             [s] => Some(Ship {
                 name: s.name.clone(),
                 xws: s.name.clone(),
+                size: s.size.clone(),
                 faction: self
                     .factions
                     .iter()
@@ -323,6 +325,7 @@ impl Data {
             s => Some(Ship {
                 name: s[0].name.clone(),
                 xws: s[0].xws.clone(),
+                size: s[0].size.clone(),
                 faction: s
                     .iter()
                     .map(|s| {
