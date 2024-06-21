@@ -412,8 +412,9 @@ fn add_ships_sheet(
                 2,
                 *collection.singles.get(item).unwrap_or(&0) as i32,
             )?;
-            ships.write(ship_row, 3, &model.faction)?;
-            ships.write(ship_row, 4, &item.xws)?;
+            ships.write(ship_row, 3, &model.size)?;
+            ships.write(ship_row, 4, &model.faction)?;
+            ships.write(ship_row, 5, &item.xws)?;
             ships.write(
                 ship_row,
                 5,
@@ -437,6 +438,7 @@ fn add_ships_sheet(
         TableColumn::new()
             .set_header("Singles")
             .set_total_function(TableFunction::Sum),
+        TableColumn::new().set_header("Size"),
         TableColumn::new().set_header("Factions"),
         TableColumn::new()
             .set_header("XWS")
@@ -449,7 +451,7 @@ fn add_ships_sheet(
         .set_style(TableStyle::Medium3)
         .set_columns(&columns)
         .set_total_row(true);
-    ships.add_table(0, 0, ship_row, columns.len() as u16 - 1, &table)?;
+    ships.add_table(0, 0, ship_row, columns.len() as u16 - 1, table)?;
     ships.autofit();
     Ok(())
 }
@@ -551,7 +553,7 @@ fn add_pilots_sheet(
         .set_style(TableStyle::Medium4)
         .set_columns(&columns)
         .set_total_row(true);
-    pilots.add_table(0, 0, pilot_row, columns.len() as u16 - 1, &table)?;
+    pilots.add_table(0, 0, pilot_row, columns.len() as u16 - 1, table)?;
     pilots.autofit();
     Ok(())
 }
