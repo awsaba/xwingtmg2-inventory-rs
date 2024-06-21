@@ -214,4 +214,25 @@ mod test {
             }
         }
     }
+
+    #[test]
+    fn test_for_missing_ships() {
+        // checks if all the contents are valid xwsdata
+        let cat = Catalog::load().unwrap();
+
+        let data = Data::load_from_manifest(Path::new("xwing-data2")).unwrap();
+
+        for s in &data.ships {
+            let mut found = false;
+            'search: for (_, e) in &cat.expansions {
+                for i in &e.contents {
+                    if i.item.r#type == ItemType::Ship && i.item.xws == s.xws {
+                        found = true;
+                        break 'search;
+                    }
+                }
+            }
+            assert!(found, "ship not found in expansions: {}", s.xws);
+        }
+    }
 }
