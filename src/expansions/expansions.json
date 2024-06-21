@@ -12442,6 +12442,31 @@
         "count": 1,
         "type": "ship",
         "xws": "upsilonclassshuttle"
+      },
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "tiecapunisher"
+      },
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "tiephphantom"
+      },
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "aggressorassaultfighter"
+      },
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "raiderclasscorvette"
+      },
+      {
+        "count": 1,
+        "type": "ship",
+        "xws": "gr75mediumtransport"
       }
     ],
     "name": "Unreleased for 2nd Edition",
