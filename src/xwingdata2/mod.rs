@@ -163,6 +163,7 @@ impl XwsId for Ship {
 #[derive(Deserialize, Debug)]
 pub struct Side {
     pub r#type: SlotKind,
+    pub slots: Vec<SlotKind>,
 }
 
 pub enum Restriction {

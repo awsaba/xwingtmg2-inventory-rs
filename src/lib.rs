@@ -162,6 +162,7 @@ impl PilotRecord {
 pub struct UpgradeRecord {
     pub xws: String,
     pub r#type: String,
+    pub slots: String,
     pub name: String,
     pub faction_restriction: String,
     pub size_restriction: String,
@@ -191,7 +192,19 @@ impl UpgradeRecord {
                     .sides
                     .first()
                     .map(|s| format!("{:?}", s.r#type)) //FIXME
-                    .unwrap_or("not found".to_owned())
+                    .unwrap_or("unknown".to_owned())
+                    .to_owned(),
+                slots: u
+                    .sides
+                    .first()
+                    .map(|s| {
+                        s.slots
+                            .iter()
+                            .map(|k| format!("{:?}", k).to_owned())
+                            .collect::<Vec<String>>()
+                            .join(",")
+                    })
+                    .unwrap_or("unknown".to_owned())
                     .to_owned(),
                 faction_restriction: format_restriction(
                     data,
@@ -601,13 +614,14 @@ fn add_upgrades_sheet(
             )?;
 
             upgrades.write(upgrade_row, 4, &record.faction_restriction)?;
-            upgrades.write(upgrade_row, 5, &record.ship_restriction)?;
-            upgrades.write(upgrade_row, 6, &record.size_restriction)?;
-            upgrades.write(upgrade_row, 7, &record.arc_restriction)?;
-            upgrades.write(upgrade_row, 8, &record.force_side_restriction)?;
-            upgrades.write(upgrade_row, 9, &record.keyword_restriction)?;
+            upgrades.write(upgrade_row, 5, &record.slots)?;
+            upgrades.write(upgrade_row, 6, &record.ship_restriction)?;
+            upgrades.write(upgrade_row, 7, &record.size_restriction)?;
+            upgrades.write(upgrade_row, 8, &record.arc_restriction)?;
+            upgrades.write(upgrade_row, 9, &record.force_side_restriction)?;
+            upgrades.write(upgrade_row, 10, &record.keyword_restriction)?;
 
-            upgrades.write(upgrade_row, 10, &upgrade.xws)?;
+            upgrades.write(upgrade_row, 11, &upgrade.xws)?;
             upgrades.write(
                 upgrade_row,
                 11,
@@ -636,6 +650,7 @@ fn add_upgrades_sheet(
         TableColumn::new()
             .set_header("Singles")
             .set_total_function(TableFunction::Sum),
+        TableColumn::new().set_header("Slots"),
         TableColumn::new().set_header("Faction Restriction"),
         TableColumn::new().set_header("Ship Restriction"),
         TableColumn::new().set_header("Size Restriction"),
