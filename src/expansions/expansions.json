@@ -5296,11 +5296,6 @@
         "xws": "delta7aethersprite"
       },
       {
-        "count": 1,
-        "type": "ship",
-        "xws": "delta7baethersprite"
-      },
-      {
         "count": 2,
         "type": "ship",
         "xws": "v19torrentstarfighter"
@@ -5683,11 +5678,6 @@
         "count": 1,
         "type": "ship",
         "xws": "delta7aethersprite"
-      },
-      {
-        "count": 1,
-        "type": "ship",
-        "xws": "delta7baethersprite"
       },
       {
         "count": 1,
@@ -11133,7 +11123,7 @@
       {
         "count": 1,
         "type": "upgrade",
-        "xws": "sabinewren-swz93"
+        "xws": "sabinewren-command"
       },
       {
         "count": 1,

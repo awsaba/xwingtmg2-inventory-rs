@@ -66,6 +66,8 @@ pub fn to_canonical(name: &str) -> String {
         .collect::<String>()
 }
 
+const YASB_FIRST_ED: &str = "-yasb-first-edition";
+
 /// This function implements special cases where the yasb name does not match
 /// the generated xws name or performs standard xws mapping for everything else.
 ///
@@ -78,7 +80,7 @@ fn to_xws(name: &str, typ: expansions::ItemType) -> String {
     // the correct one, which does correctly cannonicalize to xws.
     match name {
         "TIE/FO Fighter" | "E-Wing" | "T-70 X-Wing" | "TIE/SF Fighter" => {
-            canonical.push_str("-legacyyasb");
+            canonical.push_str(YASB_FIRST_ED);
             return canonical;
         }
         _ => (),
@@ -158,7 +160,7 @@ fn to_xws(name: &str, typ: expansions::ItemType) -> String {
             | "yt2400"
             | "ywing"
             | "z95headhunter" => {
-                canonical.push_str("-legacyyasb");
+                canonical.push_str(YASB_FIRST_ED);
                 canonical.as_str()
             }
             _ => canonical.as_str(),
