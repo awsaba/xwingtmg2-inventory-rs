@@ -430,12 +430,12 @@ fn add_ships_sheet(
             ships.write(ship_row, 5, &item.xws)?;
             ships.write(
                 ship_row,
-                5,
+                6,
                 catalog
                     .sources
                     .get(item)
                     .map(|s| format_sources(catalog, s))
-                    .unwrap_or("".to_string()), //.unwrap_or("".to_string()),
+                    .unwrap_or("".to_string()),
             )?;
 
             ship_row += 1;
@@ -534,7 +534,7 @@ fn add_pilots_sheet(
                     .sources
                     .get(item)
                     .map(|s| format_sources(catalog, s))
-                    .unwrap_or("".to_string()), //.unwrap_or("".to_string()),
+                    .unwrap_or("".to_string()),
             )?;
 
             pilot_row += 1;
@@ -624,7 +624,7 @@ fn add_upgrades_sheet(
             upgrades.write(upgrade_row, 11, &upgrade.xws)?;
             upgrades.write(
                 upgrade_row,
-                11,
+                12,
                 catalog
                     .sources
                     .get(item)
@@ -650,8 +650,8 @@ fn add_upgrades_sheet(
         TableColumn::new()
             .set_header("Singles")
             .set_total_function(TableFunction::Sum),
-        TableColumn::new().set_header("Slots"),
         TableColumn::new().set_header("Faction Restriction"),
+        TableColumn::new().set_header("Slots"),
         TableColumn::new().set_header("Ship Restriction"),
         TableColumn::new().set_header("Size Restriction"),
         TableColumn::new().set_header("Arc Restriction"),
